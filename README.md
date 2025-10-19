@@ -19,21 +19,24 @@ Built with ❤️ using **MERN Stack + Socket.IO** for seamless messaging.
 ## 📸 Screenshots
 
 ### 🔐 Authentication Flow
-![Sign Up](./assets/signup.png)
+
 *Clean and minimal sign-up screen with smooth gradient background.*
+<img width="1919" height="868" alt="Screenshot 2025-08-20 005316" src="https://github.com/user-attachments/assets/9298667f-89a8-46df-8ce5-51d5a87ab0ea" />
 
 ---
 
 ### 👤 Profile Setup
-![Profile Setup](./assets/profile.png)
+
 *Upload profile image, add username & bio to personalize your chat experience.*
+<img width="1919" height="864" alt="Screenshot 2025-08-20 005257" src="https://github.com/user-attachments/assets/728d7247-7c09-4e90-b428-5f1982cbd892" />
 
 ---
 
 ### 💬 Chat Dashboard
-![Chat Dashboard](./assets/dashboard.png)
+
 *Real-time messaging interface with sidebar users list, active chat, and profile panel.*
 
+<img width="1914" height="863" alt="Screenshot 2025-08-20 005242" src="https://github.com/user-attachments/assets/50c8e118-33d7-4ffd-bacb-4fcfc95c6050" />
 ---
 
 ## 🛠️ Tech Stack
