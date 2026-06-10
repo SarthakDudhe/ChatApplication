@@ -1,8 +1,10 @@
 <div align="center">
   <!-- Image Placeholders -->
   <div style="display: flex; justify-content: center; gap: 10px;">
-    <img src="https://via.placeholder.com/590x300?text=App+Highlight+1" alt="Highlight 1" width="49%" />
-    <img src="https://via.placeholder.com/590x300?text=App+Highlight+2" alt="Highlight 2" width="49%" />
+ <img width="49%" alt="Screenshot 2025-08-20 005316" src="https://github.com/user-attachments/assets/a1d8d101-c27e-43a7-a085-8adb4f5bfb9e" /> 
+<img width="49%" alt="Screenshot 2025-08-20 005242" src="https://github.com/user-attachments/assets/12353fc9-cb7d-4312-93f4-f7384e2a3e13" />
+
+   
   </div>
 
   <br />
