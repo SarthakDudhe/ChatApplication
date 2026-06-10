@@ -6,7 +6,8 @@
   <br />
 
   <!-- Logo Placeholder -->
-  <img src="https://via.placeholder.com/150x150?text=Project+Logo" alt="QuickChat Logo" width="150" height="150" />
+ 
+<img width="150" height="150" alt="image" src="https://github.com/user-attachments/assets/960b581f-87c1-42a6-a872-1fbef900e360" />
 
   <h1>💬 Modern Real-Time QuickChat</h1>
 
