@@ -6,9 +6,9 @@
   <br />
 
   <!-- Logo Placeholder -->
-  <img src="https://via.placeholder.com/150x150?text=Project+Logo" alt="ChatApplication Logo" width="150" height="150" />
+  <img src="https://via.placeholder.com/150x150?text=Project+Logo" alt="QuickChat Logo" width="150" height="150" />
 
-  <h1>💬 Modern Real-Time ChatApplication</h1>
+  <h1>💬 Modern Real-Time QuickChat</h1>
 
   <p>
     <b>Enterprise-grade, real-time messaging application with intelligent features, seamless file sharing, and dynamic user presence.</b>
@@ -40,7 +40,7 @@
 
 ## 🌟 Why This Project Matters
 
-In today's remote-first and hyper-connected world, seamless communication is paramount. **ChatApplication** represents a technical demonstration of how to build an enterprise-level messaging platform from the ground up, entirely free of PaaS lock-in (like Firebase or Supabase) for the core realtime messaging loop.
+In today's remote-first and hyper-connected world, seamless communication is paramount. **QuickChat** represents a technical demonstration of how to build an enterprise-level messaging platform from the ground up, entirely free of PaaS lock-in (like Firebase or Supabase) for the core realtime messaging loop.
 
 This project addresses the **complexity of maintaining real-time distributed state** by tightly integrating `Socket.io` with a reliable `Express` backend and a highly responsive `React 19` frontend. By effectively handling WebSockets alongside RESTful patterns for authentication and stateless operations, the application serves as a robust blueprint for startups or enterprises looking to embed reliable chat infrastructure into their own products. The design focuses heavily on **scalability**, **clean architecture**, and a **premium user experience**.
 
@@ -181,7 +181,7 @@ Your application will be available at `http://localhost:5173`.
 ## 📂 Folder Structure
 
 ```text
-ChatApplication/
+QuickChat/
 ├── client/                     # Frontend Application
 │   └── my-react-app/           
 │       ├── public/             # Static Assets
