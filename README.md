@@ -1,6 +1,9 @@
 <div align="center">
-  <!-- Animated Banner Placeholder -->
-  <img src="https://via.placeholder.com/1200x300?text=Animated+Banner+%7C+1200x300+%7C+Showcase+App+Highlights" alt="Project Banner" width="100%" />
+  <!-- Image Placeholders -->
+  <div style="display: flex; justify-content: center; gap: 10px;">
+    <img src="https://via.placeholder.com/590x300?text=App+Highlight+1" alt="Highlight 1" width="49%" />
+    <img src="https://via.placeholder.com/590x300?text=App+Highlight+2" alt="Highlight 2" width="49%" />
+  </div>
 
   <br />
   <br />
