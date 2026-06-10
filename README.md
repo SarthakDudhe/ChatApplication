@@ -6,7 +6,7 @@
   <br />
 
   <!-- Logo Placeholder -->
- <img width="150" height="200" alt="ChatGPT Image Jun 10, 2026, 10_48_48 AM" src="https://github.com/user-attachments/assets/68d58645-66d4-43a7-92f0-6b1e37ea8dda" />
+ <img width="250" height="100" alt="ChatGPT Image Jun 10, 2026, 10_48_48 AM" src="https://github.com/user-attachments/assets/68d58645-66d4-43a7-92f0-6b1e37ea8dda" />
 
 
   <h1>💬 Modern Real-Time QuickChat</h1>
