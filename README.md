@@ -1,8 +1,9 @@
 <div align="center">
   <!-- Image Placeholders -->
   <div style="display: flex; justify-content: center; gap: 10px;">
- <img width="49%" alt="Screenshot 2025-08-20 005316" src="https://github.com/user-attachments/assets/a1d8d101-c27e-43a7-a085-8adb4f5bfb9e" /> 
-<img width="49%" alt="Screenshot 2025-08-20 005242" src="https://github.com/user-attachments/assets/12353fc9-cb7d-4312-93f4-f7384e2a3e13" />
+ <img width="33%" alt="Screenshot 2025-08-20 005316" src="https://github.com/user-attachments/assets/a1d8d101-c27e-43a7-a085-8adb4f5bfb9e" /> 
+<img width="33%" alt="Screenshot 2025-08-20 005242" src="https://github.com/user-attachments/assets/12353fc9-cb7d-4312-93f4-f7384e2a3e13" />
+<img width="33%" alt="Screenshot 2025-08-20 005257" src="https://github.com/user-attachments/assets/823dbe92-af5a-4a21-9d01-c84d36313951" />
 
    
   </div>
