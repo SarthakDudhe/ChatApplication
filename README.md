@@ -9,7 +9,8 @@
   <br />
 
   <!-- Logo Placeholder -->
-  <img src="https://via.placeholder.com/150x150?text=Project+Logo" alt="QuickChat Logo" width="150" height="150" />
+ <img width="250" height="100" alt="ChatGPT Image Jun 10, 2026, 10_48_48 AM" src="https://github.com/user-attachments/assets/68d58645-66d4-43a7-92f0-6b1e37ea8dda" />
+
 
   <h1>💬 Modern Real-Time QuickChat</h1>
 
