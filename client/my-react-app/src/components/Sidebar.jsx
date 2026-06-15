@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import assets, { userDummyData } from '../assets/assets'
+import { formatLastSeen } from '../lib/utils'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
 import { ChatContext } from '../../context/ChatContext'
@@ -46,7 +47,7 @@ getUsers();
           <div className='flex flex-col leading-5'>
          <p>{user.fullname}</p>
          {
-          onlineUser.includes(user._id) ? <span className='text-green-400 text-xs'>Online</span>: <span className='text-neutral-400 text-xs'>Offline</span>
+          onlineUser.includes(user._id) ? <span className='text-green-400 text-xs'>Online</span>: <span className='text-neutral-400 text-xs'>{formatLastSeen(user.lastSeen)}</span>
          }
           </div>
           {unseenMessages[user._id]>0 &&<p className='absolute top-4 right-4 text-xs h-5 w-5 flex justify-center items-center rounded-full bg-violet-500/50'>{unseenMessages[user._id]}</p> }

@@ -6,6 +6,7 @@ import { connectDB } from "./lib/db.js";
 import userRouter from "./routes/userRoutes.js";
 import messageRouter from "./routes/messageRoutes.js";
 import { Server } from "socket.io";
+import User from "./models/User.js";
 
 //Create Express app and Http server
 
@@ -44,9 +45,11 @@ socket.on("stopTyping",({receiverId})=>{
     }
 });
 
-socket.on("disconnect", ()=>{
+socket.on("disconnect", async ()=>{
     console.log("User Disconnected ",userId);
     delete userSocketMap[userId];
+    //Update lastSeen timestamp
+    if(userId) await User.findByIdAndUpdate(userId,{lastSeen:new Date()});
     io.emit("getOnlineUsers",Object.keys(userSocketMap))
 })
 
