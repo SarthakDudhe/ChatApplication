@@ -4,13 +4,33 @@ import { formatMessageTime } from '../lib/utils'
 import { ChatContext } from '../../context/ChatContext'
 import { AuthContext } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
+import EmojiPicker from 'emoji-picker-react'
 const ChatContainer = () => {
 
 const {messages,selectedUser,setSelectedUser,sendMessage,getMessages,typingUsers,emitTyping,emitStopTyping} =useContext(ChatContext);
 const {authUser,onlineUser} =useContext(AuthContext);
 
 const[input,setInput]=useState('')
+const[showEmojiPicker,setShowEmojiPicker]=useState(false)
 const typingTimeoutRef=useRef(null)
+const emojiPickerRef=useRef(null)
+
+//Handle emoji selection
+const handleEmojiClick=(emojiData)=>{
+  setInput(prev=>prev+emojiData.emoji)
+  setShowEmojiPicker(false)
+}
+
+//Close emoji picker when clicking outside
+useEffect(()=>{
+  const handleClickOutside=(e)=>{
+    if(emojiPickerRef.current && !emojiPickerRef.current.contains(e.target)){
+      setShowEmojiPicker(false)
+    }
+  }
+  document.addEventListener('mousedown',handleClickOutside)
+  return ()=>document.removeEventListener('mousedown',handleClickOutside)
+},[])
 
 //Handle input change with typing indicator
 const handleInputChange=(e)=>{
@@ -115,15 +135,32 @@ if (scrollEnd.current && messages) {
         <div ref={scrollEnd}></div>
       </div>
 {/* BOTTOM AREA */}
-      <div className='absolute bottom-0 left-0 right-0 flex items-center gap-3 p-3'>
-        <div className='flex-1 flex items-center bg-gray-100/12 px-3 rounded-full'>
-          <input onChange={handleInputChange} value={input} onKeyDown={(e)=>e.key ==="Enter"? handlesendMessage(e): null} type="text" placeholder='Send a Message' className='flex-1 text-sm p-3 border-none rounded-lg outline-none text-white placeholder-gray-400'/>
-          <input type="file" onChange={handleSendImage} id='image' accept='image/png, image/jpeg' hidden/>
-          <label htmlFor="image">
-            <img src={assets.gallery_icon} alt="" className='w-5 mr-2 cursor-pointer' />
-          </label>
+      <div className='absolute bottom-0 left-0 right-0 p-3'>
+        {/* Emoji Picker Popup */}
+        {showEmojiPicker && (
+          <div ref={emojiPickerRef} className='absolute bottom-16 left-3 z-10'>
+            <EmojiPicker
+              onEmojiClick={handleEmojiClick}
+              theme='dark'
+              width={300}
+              height={400}
+              searchDisabled={false}
+              skinTonesDisabled
+              previewConfig={{showPreview:false}}
+            />
+          </div>
+        )}
+        <div className='flex items-center gap-3'>
+          <div className='flex-1 flex items-center bg-gray-100/12 px-3 rounded-full'>
+            <button onClick={()=>setShowEmojiPicker(prev=>!prev)} className='text-xl cursor-pointer mr-1 hover:scale-110 transition-transform' title='Emoji'>😊</button>
+            <input onChange={handleInputChange} value={input} onKeyDown={(e)=>e.key ==="Enter"? handlesendMessage(e): null} type="text" placeholder='Send a Message' className='flex-1 text-sm p-3 border-none rounded-lg outline-none text-white placeholder-gray-400'/>
+            <input type="file" onChange={handleSendImage} id='image' accept='image/png, image/jpeg' hidden/>
+            <label htmlFor="image">
+              <img src={assets.gallery_icon} alt="" className='w-5 mr-2 cursor-pointer' />
+            </label>
+          </div>
+          <img onClick={handlesendMessage} src={assets.send_button} alt="" className='w-7 cursor-pointer' />
         </div>
-        <img onClick={handlesendMessage} src={assets.send_button} alt="" className='w-7 cursor-pointer' />
       </div>
 
 
