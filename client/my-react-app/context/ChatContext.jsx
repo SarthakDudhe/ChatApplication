@@ -67,6 +67,43 @@ const sendMessage =async (messageData) => {
 }
 
 
+//Function to delete a message
+
+const deleteMessage = async (messageId) => {
+    try {
+        const {data} = await axios.delete(`/api/messages/delete/${messageId}`);
+        if (data.success) {
+            setMessages(prev => prev.map(msg =>
+                msg._id === messageId ? {...msg, deleted: true, text: '', image: ''} : msg
+            ))
+            toast.success('Message deleted')
+        } else {
+            toast.error(data.message)
+        }
+    } catch (error) {
+        toast.error(error.message)
+    }
+}
+
+//Function to edit a message
+
+const editMessage = async (messageId, newText) => {
+    try {
+        const {data} = await axios.put(`/api/messages/edit/${messageId}`, {text: newText});
+        if (data.success) {
+            setMessages(prev => prev.map(msg =>
+                msg._id === messageId ? {...msg, text: newText, editedAt: new Date()} : msg
+            ))
+            toast.success('Message edited')
+        } else {
+            toast.error(data.message)
+        }
+    } catch (error) {
+        toast.error(error.message)
+    }
+}
+
+
 //Functions to emit typing events
 
 const emitTyping = (receiverId) => {
@@ -106,6 +143,18 @@ const subscribeToMessages =async ()=>{
             return updated;
         })
     })
+
+    socket.on("messageDeleted",({messageId})=>{
+        setMessages(prev=>prev.map(msg=>
+            msg._id===messageId ? {...msg,deleted:true,text:'',image:''} : msg
+        ))
+    })
+
+    socket.on("messageEdited",({messageId,text,editedAt})=>{
+        setMessages(prev=>prev.map(msg=>
+            msg._id===messageId ? {...msg,text,editedAt} : msg
+        ))
+    })
 }
 
 //function to unsubscribe from messages
@@ -115,6 +164,8 @@ const unsubscribeFromMessages = ()=>{
         socket.off("newMessage");
         socket.off("userTyping");
         socket.off("userStopTyping");
+        socket.off("messageDeleted");
+        socket.off("messageEdited");
     }
 }
 
@@ -129,7 +180,7 @@ return ()=>unsubscribeFromMessages();
 
   
   const value ={
-messages,users,selectedUser,getUsers,setMessages,sendMessage,getMessages,setSelectedUser,unseenMessages,setUnseenMessages,typingUsers,emitTyping,emitStopTyping
+messages,users,selectedUser,getUsers,setMessages,sendMessage,getMessages,setSelectedUser,unseenMessages,setUnseenMessages,typingUsers,emitTyping,emitStopTyping,deleteMessage,editMessage
   }
 
   return (<ChatContext.Provider value={value}>

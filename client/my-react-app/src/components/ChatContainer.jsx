@@ -7,13 +7,44 @@ import toast from 'react-hot-toast'
 import EmojiPicker from 'emoji-picker-react'
 const ChatContainer = () => {
 
-const {messages,selectedUser,setSelectedUser,sendMessage,getMessages,typingUsers,emitTyping,emitStopTyping} =useContext(ChatContext);
+const {messages,selectedUser,setSelectedUser,sendMessage,getMessages,typingUsers,emitTyping,emitStopTyping,deleteMessage,editMessage} =useContext(ChatContext);
 const {authUser,onlineUser} =useContext(AuthContext);
 
 const[input,setInput]=useState('')
 const[showEmojiPicker,setShowEmojiPicker]=useState(false)
+const[contextMenu,setContextMenu]=useState(null)
+const[editingMsg,setEditingMsg]=useState(null)
+const[editText,setEditText]=useState('')
 const typingTimeoutRef=useRef(null)
 const emojiPickerRef=useRef(null)
+
+//Handle delete message
+const handleDelete=(msgId)=>{
+  deleteMessage(msgId)
+  setContextMenu(null)
+}
+
+//Handle start editing
+const handleStartEdit=(msg)=>{
+  setEditingMsg(msg._id)
+  setEditText(msg.text)
+  setContextMenu(null)
+}
+
+//Handle save edit
+const handleSaveEdit=()=>{
+  if(editText.trim()!==''){
+    editMessage(editingMsg,editText.trim())
+  }
+  setEditingMsg(null)
+  setEditText('')
+}
+
+//Handle cancel edit
+const handleCancelEdit=()=>{
+  setEditingMsg(null)
+  setEditText('')
+}
 
 //Handle emoji selection
 const handleEmojiClick=(emojiData)=>{
@@ -104,11 +135,36 @@ if (scrollEnd.current && messages) {
       {/* CHAT AREA */}
       <div className='flex flex-col h-[calc(100%-120px)] overflow-y-scroll p-3 pb-6'>
         {messages.map((msg,index)=>(
-          <div key={index} className={`flex items-end gap-2 justify-end ${msg.senderId !==authUser._id && 'flex-row-reverse'}`}>
-               {msg.image ? (
-                <img src={msg.image} alt="" className='max-w-[230px] border border-gray-700 rounded-lg overflow-hidden mb-8' />
+          <div key={index} className={`flex items-end gap-2 justify-end group ${msg.senderId !==authUser._id && 'flex-row-reverse'}`}>
+               {msg.deleted ? (
+                <p className={`p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all bg-gray-500/20 text-gray-400 italic ${msg.senderId ===authUser._id ? 'rounded-br-none' : 'rounded-bl-none'}`}>🚫 This message was deleted</p>
+               ): editingMsg===msg._id ? (
+                <div className='flex flex-col gap-1 mb-8'>
+                  <input value={editText} onChange={(e)=>setEditText(e.target.value)} onKeyDown={(e)=>e.key==='Enter'?handleSaveEdit():e.key==='Escape'?handleCancelEdit():null} autoFocus className='p-2 max-w-[200px] md:text-sm font-light rounded-lg bg-violet-500/50 text-white border border-violet-400 outline-none'/>
+                  <div className='flex gap-1 text-xs'>
+                    <button onClick={handleSaveEdit} className='text-green-400 hover:text-green-300 cursor-pointer'>Save</button>
+                    <button onClick={handleCancelEdit} className='text-red-400 hover:text-red-300 cursor-pointer'>Cancel</button>
+                  </div>
+                </div>
+               ): msg.image ? (
+                <div className='relative'>
+                  <img src={msg.image} alt="" className='max-w-[230px] border border-gray-700 rounded-lg overflow-hidden mb-8' />
+                  {msg.senderId===authUser._id && (
+                    <div className='absolute top-1 right-1 hidden group-hover:flex gap-1'>
+                      <button onClick={()=>handleDelete(msg._id)} className='bg-red-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-red-600' title='Delete'>🗑️</button>
+                    </div>
+                  )}
+                </div>
                ):(
-                <p className={`p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all bg-violet-500/30 text-white ${msg.senderId ===authUser._id ? 'rounded-br-none' : 'rounded-bl-none'}`}>{msg.text}</p>
+                <div className='relative'>
+                  <p className={`p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all bg-violet-500/30 text-white ${msg.senderId ===authUser._id ? 'rounded-br-none' : 'rounded-bl-none'}`}>{msg.text}{msg.editedAt && <span className='text-gray-400 text-[10px] ml-1'>(edited)</span>}</p>
+                  {msg.senderId===authUser._id && (
+                    <div className='absolute top-1 right-1 hidden group-hover:flex gap-1'>
+                      <button onClick={()=>handleStartEdit(msg)} className='bg-blue-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-blue-600' title='Edit'>✏️</button>
+                      <button onClick={()=>handleDelete(msg._id)} className='bg-red-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-red-600' title='Delete'>🗑️</button>
+                    </div>
+                  )}
+                </div>
                )}
                <div className='text-center text-xs'>
                  <img src={msg.senderId === authUser._id ? authUser?.profilePic || assets.avatar_icon :selectedUser?.profilePic || assets.avatar_icon} className='w-7 rounded-full' alt="" />

@@ -7,6 +7,8 @@ receiverId:{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true},
 text:{type:String,},
 image:{type:String,},
 seen:{type:Boolean,default:false},
+deleted:{type:Boolean,default:false},
+editedAt:{type:Date,default:null},
 },{timestamps:true});
 
 
