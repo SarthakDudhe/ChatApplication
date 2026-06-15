@@ -45,7 +45,7 @@ export const getMessages =async (req,res) => {
                 {senderId:myId,receiverId:selectedUserId},
                 {senderId:selectedUserId,receiverId:myId},
             ]
-        })
+        }).populate('replyTo','text image senderId deleted')
      await Message.updateMany({senderId:selectedUserId,receiverId:myId},{seen:true});
 
      res.json({success:true,messages})
@@ -75,7 +75,7 @@ export const markMessageAsSeen =async (req,res) => {
 
 export const sendMessage=async (req,res) => {
     try {
-        const {text,image}= req.body;
+        const {text,image,replyTo}= req.body;
         const receiverId =req.params.id;
         const senderId=req.user._id;
 let imageUrl;
@@ -85,12 +85,19 @@ if (image) {
     imageUrl =uploadResponse.secure_url;
 }
 
-const newMessage = await Message.create({
+let newMessage = await Message.create({
     senderId,
     receiverId,
     text,
-    image:imageUrl
+    image:imageUrl,
+    replyTo:replyTo || null
 })
+
+//Populate replyTo before sending
+if (replyTo) {
+    newMessage = await newMessage.populate('replyTo','text image senderId deleted')
+}
+
 //Emit the new messages to the receivers socket
 
 const receiverSocketId = userSocketMap[receiverId];

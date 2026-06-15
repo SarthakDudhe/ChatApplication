@@ -17,6 +17,7 @@ export const ChatProvider = ({children})=>{
   const [selectedUser,setSelectedUser]=useState(null)
   const [unseenMessages,setUnseenMessages]=useState({})
   const [typingUsers,setTypingUsers]=useState({})
+  const [replyingTo,setReplyingTo]=useState(null)
   
   const {socket,axios}=useContext(AuthContext);
 
@@ -54,12 +55,17 @@ const getMessages = async (userId) => {
 
 const sendMessage =async (messageData) => {
     try {
-        const {data} = await axios.post(`/api/messages/send/${selectedUser._id}`,messageData);
+        const payload = {...messageData};
+        if (replyingTo) {
+            payload.replyTo = replyingTo._id;
+        }
+        const {data} = await axios.post(`/api/messages/send/${selectedUser._id}`,payload);
         if (data.success){
             setMessages((prevMessages)=>[...prevMessages,data.newMessage])
+            setReplyingTo(null)
         }
         else{
-              toast.error(error.message)
+              toast.error(data.message)
         }
     } catch (error) {
          toast.error(error.message)
@@ -180,7 +186,7 @@ return ()=>unsubscribeFromMessages();
 
   
   const value ={
-messages,users,selectedUser,getUsers,setMessages,sendMessage,getMessages,setSelectedUser,unseenMessages,setUnseenMessages,typingUsers,emitTyping,emitStopTyping,deleteMessage,editMessage
+messages,users,selectedUser,getUsers,setMessages,sendMessage,getMessages,setSelectedUser,unseenMessages,setUnseenMessages,typingUsers,emitTyping,emitStopTyping,deleteMessage,editMessage,replyingTo,setReplyingTo
   }
 
   return (<ChatContext.Provider value={value}>

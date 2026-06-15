@@ -7,7 +7,7 @@ import toast from 'react-hot-toast'
 import EmojiPicker from 'emoji-picker-react'
 const ChatContainer = () => {
 
-const {messages,selectedUser,setSelectedUser,sendMessage,getMessages,typingUsers,emitTyping,emitStopTyping,deleteMessage,editMessage} =useContext(ChatContext);
+const {messages,selectedUser,setSelectedUser,sendMessage,getMessages,typingUsers,emitTyping,emitStopTyping,deleteMessage,editMessage,replyingTo,setReplyingTo} =useContext(ChatContext);
 const {authUser,onlineUser} =useContext(AuthContext);
 
 const[input,setInput]=useState('')
@@ -148,22 +148,38 @@ if (scrollEnd.current && messages) {
                 </div>
                ): msg.image ? (
                 <div className='relative'>
-                  <img src={msg.image} alt="" className='max-w-[230px] border border-gray-700 rounded-lg overflow-hidden mb-8' />
-                  {msg.senderId===authUser._id && (
-                    <div className='absolute top-1 right-1 hidden group-hover:flex gap-1'>
-                      <button onClick={()=>handleDelete(msg._id)} className='bg-red-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-red-600' title='Delete'>🗑️</button>
+                  {msg.replyTo && !msg.replyTo.deleted && (
+                    <div className='bg-white/5 border-l-2 border-violet-400 rounded px-2 py-1 mb-1 text-xs text-gray-300 max-w-[230px]'>
+                      <p className='text-violet-400 text-[10px] font-medium'>{msg.replyTo.senderId===authUser._id?'You':selectedUser.fullname}</p>
+                      {msg.replyTo.image ? <span>🖼️ Photo</span> : <span className='line-clamp-1'>{msg.replyTo.text}</span>}
                     </div>
                   )}
+                  <img src={msg.image} alt="" className='max-w-[230px] border border-gray-700 rounded-lg overflow-hidden mb-8' />
+                  <div className='absolute top-1 right-1 hidden group-hover:flex gap-1'>
+                    <button onClick={()=>setReplyingTo(msg)} className='bg-gray-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-gray-600' title='Reply'>↩️</button>
+                    {msg.senderId===authUser._id && (
+                      <button onClick={()=>handleDelete(msg._id)} className='bg-red-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-red-600' title='Delete'>🗑️</button>
+                    )}
+                  </div>
                 </div>
                ):(
                 <div className='relative'>
-                  <p className={`p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all bg-violet-500/30 text-white ${msg.senderId ===authUser._id ? 'rounded-br-none' : 'rounded-bl-none'}`}>{msg.text}{msg.editedAt && <span className='text-gray-400 text-[10px] ml-1'>(edited)</span>}</p>
-                  {msg.senderId===authUser._id && (
-                    <div className='absolute top-1 right-1 hidden group-hover:flex gap-1'>
-                      <button onClick={()=>handleStartEdit(msg)} className='bg-blue-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-blue-600' title='Edit'>✏️</button>
-                      <button onClick={()=>handleDelete(msg._id)} className='bg-red-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-red-600' title='Delete'>🗑️</button>
+                  {msg.replyTo && !msg.replyTo.deleted && (
+                    <div className='bg-white/5 border-l-2 border-violet-400 rounded px-2 py-1 mb-1 text-xs text-gray-300 max-w-[200px]'>
+                      <p className='text-violet-400 text-[10px] font-medium'>{msg.replyTo.senderId===authUser._id?'You':selectedUser.fullname}</p>
+                      {msg.replyTo.image ? <span>🖼️ Photo</span> : <span className='line-clamp-1'>{msg.replyTo.text}</span>}
                     </div>
                   )}
+                  <p className={`p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all bg-violet-500/30 text-white ${msg.senderId ===authUser._id ? 'rounded-br-none' : 'rounded-bl-none'}`}>{msg.text}{msg.editedAt && <span className='text-gray-400 text-[10px] ml-1'>(edited)</span>}</p>
+                  <div className='absolute top-1 right-1 hidden group-hover:flex gap-1'>
+                    <button onClick={()=>setReplyingTo(msg)} className='bg-gray-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-gray-600' title='Reply'>↩️</button>
+                    {msg.senderId===authUser._id && (
+                      <>
+                        <button onClick={()=>handleStartEdit(msg)} className='bg-blue-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-blue-600' title='Edit'>✏️</button>
+                        <button onClick={()=>handleDelete(msg._id)} className='bg-red-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-red-600' title='Delete'>🗑️</button>
+                      </>
+                    )}
+                  </div>
                 </div>
                )}
                <div className='text-center text-xs'>
@@ -192,6 +208,16 @@ if (scrollEnd.current && messages) {
       </div>
 {/* BOTTOM AREA */}
       <div className='absolute bottom-0 left-0 right-0 p-3'>
+        {/* Reply Preview */}
+        {replyingTo && (
+          <div className='flex items-center justify-between bg-violet-500/20 border-l-2 border-violet-400 rounded px-3 py-2 mb-2 text-sm text-gray-300'>
+            <div className='flex-1 min-w-0'>
+              <p className='text-violet-400 text-xs font-medium'>Replying to {replyingTo.senderId===authUser._id?'yourself':selectedUser.fullname}</p>
+              <p className='truncate text-xs'>{replyingTo.image ? '🖼️ Photo' : replyingTo.text}</p>
+            </div>
+            <button onClick={()=>setReplyingTo(null)} className='text-gray-400 hover:text-white ml-2 text-lg cursor-pointer'>✕</button>
+          </div>
+        )}
         {/* Emoji Picker Popup */}
         {showEmojiPicker && (
           <div ref={emojiPickerRef} className='absolute bottom-16 left-3 z-10'>

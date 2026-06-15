@@ -9,6 +9,7 @@ image:{type:String,},
 seen:{type:Boolean,default:false},
 deleted:{type:Boolean,default:false},
 editedAt:{type:Date,default:null},
+replyTo:{type:mongoose.Schema.Types.ObjectId,ref:"Message",default:null},
 },{timestamps:true});
 
 
