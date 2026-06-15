@@ -6,15 +6,32 @@ import { AuthContext } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
 const ChatContainer = () => {
 
-const {messages,selectedUser,setSelectedUser,sendMessage,getMessages} =useContext(ChatContext);
+const {messages,selectedUser,setSelectedUser,sendMessage,getMessages,typingUsers,emitTyping,emitStopTyping} =useContext(ChatContext);
 const {authUser,onlineUser} =useContext(AuthContext);
 
 const[input,setInput]=useState('')
+const typingTimeoutRef=useRef(null)
+
+//Handle input change with typing indicator
+const handleInputChange=(e)=>{
+  setInput(e.target.value)
+  if(selectedUser){
+    emitTyping(selectedUser._id)
+    if(typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+    typingTimeoutRef.current=setTimeout(()=>{
+      emitStopTyping(selectedUser._id)
+    },1000)
+  }
+}
+
 //Handle sending a message
 const handlesendMessage=async(e)=>{
 e.preventDefault();
 if (input.trim() ==="")return null;
-  
+if(selectedUser){
+  emitStopTyping(selectedUser._id)
+  if(typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+}
 await sendMessage({text:input.trim()});
 setInput('')
 }
@@ -79,12 +96,28 @@ if (scrollEnd.current && messages) {
                </div>
           </div>
         ))}
+        {/* TYPING INDICATOR */}
+        {selectedUser && typingUsers[selectedUser._id] && (
+          <div className='flex items-end gap-2 justify-end flex-row-reverse'>
+            <div className='p-2 rounded-lg mb-8 rounded-bl-none bg-violet-500/30'>
+              <div className='flex items-center gap-1 px-2 py-1'>
+                <span className='w-2 h-2 rounded-full bg-white/70 animate-bounce' style={{animationDelay:'0ms'}}></span>
+                <span className='w-2 h-2 rounded-full bg-white/70 animate-bounce' style={{animationDelay:'150ms'}}></span>
+                <span className='w-2 h-2 rounded-full bg-white/70 animate-bounce' style={{animationDelay:'300ms'}}></span>
+              </div>
+            </div>
+            <div className='text-center text-xs'>
+              <img src={selectedUser?.profilePic || assets.avatar_icon} className='w-7 rounded-full' alt='' />
+              <p className='text-gray-500'>typing</p>
+            </div>
+          </div>
+        )}
         <div ref={scrollEnd}></div>
       </div>
 {/* BOTTOM AREA */}
       <div className='absolute bottom-0 left-0 right-0 flex items-center gap-3 p-3'>
         <div className='flex-1 flex items-center bg-gray-100/12 px-3 rounded-full'>
-          <input onChange={(e)=>setInput(e.target.value)} value={input} onKeyDown={(e)=>e.key ==="Enter"? handlesendMessage(e): null} type="text" placeholder='Send a Message' className='flex-1 text-sm p-3 border-none rounded-lg outline-none text-white placeholder-gray-400'/>
+          <input onChange={handleInputChange} value={input} onKeyDown={(e)=>e.key ==="Enter"? handlesendMessage(e): null} type="text" placeholder='Send a Message' className='flex-1 text-sm p-3 border-none rounded-lg outline-none text-white placeholder-gray-400'/>
           <input type="file" onChange={handleSendImage} id='image' accept='image/png, image/jpeg' hidden/>
           <label htmlFor="image">
             <img src={assets.gallery_icon} alt="" className='w-5 mr-2 cursor-pointer' />

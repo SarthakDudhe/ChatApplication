@@ -16,6 +16,7 @@ export const ChatProvider = ({children})=>{
   const [users,setUsers]=useState([]);
   const [selectedUser,setSelectedUser]=useState(null)
   const [unseenMessages,setUnseenMessages]=useState({})
+  const [typingUsers,setTypingUsers]=useState({})
   
   const {socket,axios}=useContext(AuthContext);
 
@@ -66,6 +67,16 @@ const sendMessage =async (messageData) => {
 }
 
 
+//Functions to emit typing events
+
+const emitTyping = (receiverId) => {
+    if (socket) socket.emit("typing", { receiverId });
+}
+
+const emitStopTyping = (receiverId) => {
+    if (socket) socket.emit("stopTyping", { receiverId });
+}
+
 // Function to subscribe to message for selected user
 
 const subscribeToMessages =async ()=>{
@@ -83,12 +94,28 @@ const subscribeToMessages =async ()=>{
             }))
         }
     })
+
+    socket.on("userTyping",({senderId})=>{
+        setTypingUsers(prev=>({...prev,[senderId]:true}))
+    })
+
+    socket.on("userStopTyping",({senderId})=>{
+        setTypingUsers(prev=>{
+            const updated={...prev};
+            delete updated[senderId];
+            return updated;
+        })
+    })
 }
 
 //function to unsubscribe from messages
 
 const unsubscribeFromMessages = ()=>{
-    if (socket) socket.off("newMessage");
+    if (socket) {
+        socket.off("newMessage");
+        socket.off("userTyping");
+        socket.off("userStopTyping");
+    }
 }
 
 
@@ -102,7 +129,7 @@ return ()=>unsubscribeFromMessages();
 
   
   const value ={
-messages,users,selectedUser,getUsers,setMessages,sendMessage,getMessages,setSelectedUser,unseenMessages,setUnseenMessages
+messages,users,selectedUser,getUsers,setMessages,sendMessage,getMessages,setSelectedUser,unseenMessages,setUnseenMessages,typingUsers,emitTyping,emitStopTyping
   }
 
   return (<ChatContext.Provider value={value}>
