@@ -21,3 +21,22 @@ export function formatLastSeen(date){
     if(diffDays === 1) return 'Last seen yesterday';
     return `Last seen ${lastSeen.toLocaleDateString("en-US",{month:'short',day:'numeric'})}`;
 }
+
+export function formatDateHeader(dateString) {
+    const date = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) {
+        return "Today";
+    } else if (date.toDateString() === yesterday.toDateString()) {
+        return "Yesterday";
+    } else {
+        return date.toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+        });
+    }
+}

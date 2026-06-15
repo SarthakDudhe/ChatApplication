@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import assets, { messagesDummyData } from "../assets/assets"
-import { formatMessageTime } from '../lib/utils'
+import { formatMessageTime, formatDateHeader } from '../lib/utils'
 import { ChatContext } from '../../context/ChatContext'
 import { AuthContext } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
@@ -134,60 +134,73 @@ if (scrollEnd.current && messages) {
       </div>
       {/* CHAT AREA */}
       <div className='flex flex-col h-[calc(100%-120px)] overflow-y-scroll p-3 pb-6'>
-        {messages.map((msg,index)=>(
-          <div key={index} className={`flex items-end gap-2 justify-end group ${msg.senderId !==authUser._id && 'flex-row-reverse'}`}>
-               {msg.deleted ? (
-                <p className={`p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all bg-gray-500/20 text-gray-400 italic ${msg.senderId ===authUser._id ? 'rounded-br-none' : 'rounded-bl-none'}`}>🚫 This message was deleted</p>
-               ): editingMsg===msg._id ? (
-                <div className='flex flex-col gap-1 mb-8'>
-                  <input value={editText} onChange={(e)=>setEditText(e.target.value)} onKeyDown={(e)=>e.key==='Enter'?handleSaveEdit():e.key==='Escape'?handleCancelEdit():null} autoFocus className='p-2 max-w-[200px] md:text-sm font-light rounded-lg bg-violet-500/50 text-white border border-violet-400 outline-none'/>
-                  <div className='flex gap-1 text-xs'>
-                    <button onClick={handleSaveEdit} className='text-green-400 hover:text-green-300 cursor-pointer'>Save</button>
-                    <button onClick={handleCancelEdit} className='text-red-400 hover:text-red-300 cursor-pointer'>Cancel</button>
-                  </div>
+        {messages.map((msg,index)=>{
+          const prevMsg = messages[index - 1];
+          const showDivider = !prevMsg || new Date(msg.createdAt).toDateString() !== new Date(prevMsg.createdAt).toDateString();
+          return (
+            <React.Fragment key={msg._id || index}>
+              {showDivider && (
+                <div className='flex justify-center my-4 w-full'>
+                  <span className='bg-[#282142]/85 text-gray-200 text-[11px] px-3 py-1 rounded-full border border-violet-500/20 shadow-sm font-medium backdrop-blur-md'>
+                    {formatDateHeader(msg.createdAt)}
+                  </span>
                 </div>
-               ): msg.image ? (
-                <div className='relative'>
-                  {msg.replyTo && !msg.replyTo.deleted && (
-                    <div className='bg-white/5 border-l-2 border-violet-400 rounded px-2 py-1 mb-1 text-xs text-gray-300 max-w-[230px]'>
-                      <p className='text-violet-400 text-[10px] font-medium'>{msg.replyTo.senderId===authUser._id?'You':selectedUser.fullname}</p>
-                      {msg.replyTo.image ? <span>🖼️ Photo</span> : <span className='line-clamp-1'>{msg.replyTo.text}</span>}
+              )}
+              <div className={`flex items-end gap-2 justify-end group ${msg.senderId !==authUser._id ? 'flex-row-reverse' : ''}`}>
+                   {msg.deleted ? (
+                    <p className={`p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all bg-gray-500/20 text-gray-400 italic ${msg.senderId ===authUser._id ? 'rounded-br-none' : 'rounded-bl-none'}`}>🚫 This message was deleted</p>
+                   ): editingMsg===msg._id ? (
+                    <div className='flex flex-col gap-1 mb-8'>
+                      <input value={editText} onChange={(e)=>setEditText(e.target.value)} onKeyDown={(e)=>e.key==='Enter'?handleSaveEdit():e.key==='Escape'?handleCancelEdit():null} autoFocus className='p-2 max-w-[200px] md:text-sm font-light rounded-lg bg-violet-500/50 text-white border border-violet-400 outline-none'/>
+                      <div className='flex gap-1 text-xs'>
+                        <button onClick={handleSaveEdit} className='text-green-400 hover:text-green-300 cursor-pointer'>Save</button>
+                        <button onClick={handleCancelEdit} className='text-red-400 hover:text-red-300 cursor-pointer'>Cancel</button>
+                      </div>
                     </div>
-                  )}
-                  <img src={msg.image} alt="" className='max-w-[230px] border border-gray-700 rounded-lg overflow-hidden mb-8' />
-                  <div className='absolute top-1 right-1 hidden group-hover:flex gap-1'>
-                    <button onClick={()=>setReplyingTo(msg)} className='bg-gray-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-gray-600' title='Reply'>↩️</button>
-                    {msg.senderId===authUser._id && (
-                      <button onClick={()=>handleDelete(msg._id)} className='bg-red-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-red-600' title='Delete'>🗑️</button>
-                    )}
-                  </div>
-                </div>
-               ):(
-                <div className='relative'>
-                  {msg.replyTo && !msg.replyTo.deleted && (
-                    <div className='bg-white/5 border-l-2 border-violet-400 rounded px-2 py-1 mb-1 text-xs text-gray-300 max-w-[200px]'>
-                      <p className='text-violet-400 text-[10px] font-medium'>{msg.replyTo.senderId===authUser._id?'You':selectedUser.fullname}</p>
-                      {msg.replyTo.image ? <span>🖼️ Photo</span> : <span className='line-clamp-1'>{msg.replyTo.text}</span>}
+                   ): msg.image ? (
+                    <div className='relative'>
+                      {msg.replyTo && !msg.replyTo.deleted && (
+                        <div className='bg-white/5 border-l-2 border-violet-400 rounded px-2 py-1 mb-1 text-xs text-gray-300 max-w-[230px]'>
+                          <p className='text-violet-400 text-[10px] font-medium'>{msg.replyTo.senderId===authUser._id?'You':selectedUser.fullname}</p>
+                          {msg.replyTo.image ? <span>🖼️ Photo</span> : <span className='line-clamp-1'>{msg.replyTo.text}</span>}
+                        </div>
+                      )}
+                      <img src={msg.image} alt="" className='max-w-[230px] border border-gray-700 rounded-lg overflow-hidden mb-8' />
+                      <div className='absolute top-1 right-1 hidden group-hover:flex gap-1'>
+                        <button onClick={()=>setReplyingTo(msg)} className='bg-gray-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-gray-600' title='Reply'>↩️</button>
+                        {msg.senderId===authUser._id && (
+                          <button onClick={()=>handleDelete(msg._id)} className='bg-red-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-red-600' title='Delete'>🗑️</button>
+                        )}
+                      </div>
                     </div>
-                  )}
-                  <p className={`p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all bg-violet-500/30 text-white ${msg.senderId ===authUser._id ? 'rounded-br-none' : 'rounded-bl-none'}`}>{msg.text}{msg.editedAt && <span className='text-gray-400 text-[10px] ml-1'>(edited)</span>}</p>
-                  <div className='absolute top-1 right-1 hidden group-hover:flex gap-1'>
-                    <button onClick={()=>setReplyingTo(msg)} className='bg-gray-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-gray-600' title='Reply'>↩️</button>
-                    {msg.senderId===authUser._id && (
-                      <>
-                        <button onClick={()=>handleStartEdit(msg)} className='bg-blue-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-blue-600' title='Edit'>✏️</button>
-                        <button onClick={()=>handleDelete(msg._id)} className='bg-red-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-red-600' title='Delete'>🗑️</button>
-                      </>
-                    )}
-                  </div>
-                </div>
-               )}
-               <div className='text-center text-xs'>
-                 <img src={msg.senderId === authUser._id ? authUser?.profilePic || assets.avatar_icon :selectedUser?.profilePic || assets.avatar_icon} className='w-7 rounded-full' alt="" />
-                 <p className='text-gray-500'>{formatMessageTime(msg.createdAt) }</p>
-               </div>
-          </div>
-        ))}
+                   ):(
+                    <div className='relative'>
+                      {msg.replyTo && !msg.replyTo.deleted && (
+                        <div className='bg-white/5 border-l-2 border-violet-400 rounded px-2 py-1 mb-1 text-xs text-gray-300 max-w-[200px]'>
+                          <p className='text-violet-400 text-[10px] font-medium'>{msg.replyTo.senderId===authUser._id?'You':selectedUser.fullname}</p>
+                          {msg.replyTo.image ? <span>🖼️ Photo</span> : <span className='line-clamp-1'>{msg.replyTo.text}</span>}
+                        </div>
+                      )}
+                      <p className={`p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all bg-violet-500/30 text-white ${msg.senderId ===authUser._id ? 'rounded-br-none' : 'rounded-bl-none'}`}>{msg.text}{msg.editedAt && <span className='text-gray-400 text-[10px] ml-1'>(edited)</span>}</p>
+                      <div className='absolute top-1 right-1 hidden group-hover:flex gap-1'>
+                        <button onClick={()=>setReplyingTo(msg)} className='bg-gray-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-gray-600' title='Reply'>↩️</button>
+                        {msg.senderId===authUser._id && (
+                          <>
+                            <button onClick={()=>handleStartEdit(msg)} className='bg-blue-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-blue-600' title='Edit'>✏️</button>
+                            <button onClick={()=>handleDelete(msg._id)} className='bg-red-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-red-600' title='Delete'>🗑️</button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                   )}
+                   <div className='text-center text-xs'>
+                     <img src={msg.senderId === authUser._id ? authUser?.profilePic || assets.avatar_icon :selectedUser?.profilePic || assets.avatar_icon} className='w-7 rounded-full' alt="" />
+                     <p className='text-gray-500'>{formatMessageTime(msg.createdAt) }</p>
+                   </div>
+              </div>
+            </React.Fragment>
+          );
+        })}
         {/* TYPING INDICATOR */}
         {selectedUser && typingUsers[selectedUser._id] && (
           <div className='flex items-end gap-2 justify-end flex-row-reverse'>
