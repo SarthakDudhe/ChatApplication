@@ -15,6 +15,7 @@ export const ChatProvider = ({children})=>{
   
   const [messages,setMessages] =useState([]);
   const [users,setUsers]=useState([]);
+  const [conversations, setConversations] = useState([]);
   const [selectedUser,setSelectedUser]=useState(null)
   const [unseenMessages,setUnseenMessages]=useState({})
   const [typingUsers,setTypingUsers]=useState({})
@@ -71,7 +72,6 @@ export const ChatProvider = ({children})=>{
 
 
 //function to get all users for sidebar
-
 const getUsers = async () => {
     try {
         const {data} =await axios.get("/api/messages/users");
@@ -79,10 +79,91 @@ const getUsers = async () => {
             setUsers(data.users)
             setUnseenMessages(data.unseenMessages)
         }
+        await getConversations();
     } catch (error) {
         toast.error(error.message)
     }
 }
+
+//function to get all conversations (1:1 and groups)
+const getConversations = async () => {
+    try {
+        const {data} = await axios.get("/api/conversations/list");
+        if (data.success) {
+            setConversations(data.conversations);
+        }
+    } catch (error) {
+        toast.error(error.message);
+    }
+}
+
+//function to create a group conversation
+const createGroup = async (groupData) => {
+    try {
+        const {data} = await axios.post("/api/conversations/create", groupData);
+        if (data.success) {
+            setConversations(prev => [data.group, ...prev]);
+            toast.success("Group created successfully");
+            return data.group;
+        } else {
+            toast.error(data.message);
+        }
+    } catch (error) {
+        toast.error(error.message);
+    }
+}
+
+const addGroupMembers = async (conversationId, memberIds) => {
+    try {
+        const { data } = await axios.put("/api/conversations/add-members", { conversationId, memberIds });
+        if (data.success) {
+            setConversations(prev => prev.map(c => c._id === conversationId ? data.group : c));
+            toast.success("Members added successfully!");
+        } else {
+            toast.error(data.message);
+        }
+    } catch (error) {
+        toast.error(error.message);
+    }
+};
+
+const removeGroupMember = async (conversationId, memberId) => {
+    try {
+        const { data } = await axios.put("/api/conversations/remove-member", { conversationId, memberId });
+        if (data.success) {
+            if (data.message && data.message.includes("deleted")) {
+                setConversations(prev => prev.filter(c => c._id !== conversationId));
+                if (selectedUser && selectedUser._id === conversationId) {
+                    setSelectedUser(null);
+                }
+            } else {
+                setConversations(prev => prev.map(c => c._id === conversationId ? data.group : c));
+            }
+            toast.success("Member removed/Group left successfully!");
+        } else {
+            toast.error(data.message);
+        }
+    } catch (error) {
+        toast.error(error.message);
+    }
+};
+
+const updateGroupInfo = async (conversationId, groupName, groupAvatar) => {
+    try {
+        const { data } = await axios.put("/api/conversations/update-info", { conversationId, groupName, groupAvatar });
+        if (data.success) {
+            setConversations(prev => prev.map(c => c._id === conversationId ? data.group : c));
+            if (selectedUser && selectedUser._id === conversationId) {
+                setSelectedUser(data.group);
+            }
+            toast.success("Group updated successfully!");
+        } else {
+            toast.error(data.message);
+        }
+    } catch (error) {
+        toast.error(error.message);
+    }
+};
 
 //function to search messages
 const searchMessages = async (query) => {
@@ -99,7 +180,7 @@ const searchMessages = async (query) => {
             // Decrypt all messages locally
             const decrypted = data.messages.map(msg => ({
                 ...msg,
-                text: decryptMessage(msg.text, msg.senderId._id, msg.receiverId._id)
+                text: decryptMessage(msg.text, msg.senderId?._id || msg.senderId, msg.receiverId?._id || msg.receiverId, msg.conversationId)
             }));
             
             // Search client-side on decrypted text
@@ -118,19 +199,18 @@ const searchMessages = async (query) => {
     }
 }
 
-//function to get messages for selected user
-
-const getMessages = async (userId) => {
+//function to get messages for selected user or group
+const getMessages = async (chatId) => {
     try {
-        const {data} = await axios.get(`/api/messages/${userId}`);
+        const {data} = await axios.get(`/api/messages/${chatId}`);
         if (data.success) {
             // Decrypt fetched messages
             const decryptedMessages = data.messages.map(msg => ({
                 ...msg,
-                text: decryptMessage(msg.text, msg.senderId, msg.receiverId),
+                text: decryptMessage(msg.text, msg.senderId, msg.receiverId, msg.conversationId),
                 replyTo: msg.replyTo ? {
                     ...msg.replyTo,
-                    text: decryptMessage(msg.replyTo.text, msg.replyTo.senderId, msg.senderId === userId ? msg.receiverId : msg.senderId)
+                    text: decryptMessage(msg.replyTo.text, msg.senderId, msg.receiverId, msg.conversationId)
                 } : null
             }));
             setMessages(decryptedMessages)
@@ -140,14 +220,17 @@ const getMessages = async (userId) => {
     }
 }
 
-//Function to send message to selected user
-
+//Function to send message to selected user or group
 const sendMessage =async (messageData) => {
     try {
         const payload = {...messageData};
         if (payload.text && authUser && selectedUser) {
             // Encrypt message text client-side before sending
-            payload.text = encryptMessage(payload.text, authUser._id, selectedUser._id);
+            const conversationId = selectedUser.isGroup ? selectedUser._id : null;
+            payload.text = encryptMessage(payload.text, authUser._id, selectedUser._id, conversationId);
+            if (conversationId) {
+                payload.conversationId = conversationId;
+            }
         }
         if (replyingTo) {
             payload.replyTo = replyingTo._id;
@@ -157,7 +240,12 @@ const sendMessage =async (messageData) => {
             // Decrypt new message so it renders locally in plaintext
             const decryptedNewMsg = {
                 ...data.newMessage,
-                text: decryptMessage(data.newMessage.text, data.newMessage.senderId, data.newMessage.receiverId),
+                text: decryptMessage(
+                    data.newMessage.text, 
+                    data.newMessage.senderId, 
+                    data.newMessage.receiverId, 
+                    data.newMessage.conversationId
+                ),
                 replyTo: replyingTo ? {
                     ...replyingTo,
                     text: replyingTo.text
@@ -174,9 +262,7 @@ const sendMessage =async (messageData) => {
     }
 }
 
-
 //Function to delete a message
-
 const deleteMessage = async (messageId) => {
     try {
         const {data} = await axios.delete(`/api/messages/delete/${messageId}`);
@@ -194,7 +280,6 @@ const deleteMessage = async (messageId) => {
 }
 
 //Function to edit a message
-
 const editMessage = async (messageId, newText) => {
     try {
         const {data} = await axios.put(`/api/messages/edit/${messageId}`, {text: newText});
@@ -211,9 +296,7 @@ const editMessage = async (messageId, newText) => {
     }
 }
 
-
 //Function to react to a message
-
 const reactToMessage = async (messageId, emoji) => {
     try {
         const {data} = await axios.put(`/api/messages/react/${messageId}`, {emoji});
@@ -230,42 +313,64 @@ const reactToMessage = async (messageId, emoji) => {
 }
 
 //Functions to emit typing events
-
 const emitTyping = (receiverId) => {
-    if (socket) socket.emit("typing", { receiverId });
+    if (socket) {
+        if (selectedUser && selectedUser.isGroup) {
+            socket.emit("typing", { conversationId: selectedUser._id });
+        } else {
+            socket.emit("typing", { receiverId });
+        }
+    }
 }
 
 const emitStopTyping = (receiverId) => {
-    if (socket) socket.emit("stopTyping", { receiverId });
+    if (socket) {
+        if (selectedUser && selectedUser.isGroup) {
+            socket.emit("stopTyping", { conversationId: selectedUser._id });
+        } else {
+            socket.emit("stopTyping", { receiverId });
+        }
+    }
 }
 
-// Function to subscribe to message for selected user
-
+// Function to subscribe to message for selected user or group
 const subscribeToMessages =async ()=>{
     if(!socket) return;
 
     socket.on("newMessage",(newMessage)=>{
         // Decrypt incoming message text immediately
-        newMessage.text = decryptMessage(newMessage.text, newMessage.senderId, newMessage.receiverId);
+        newMessage.text = decryptMessage(newMessage.text, newMessage.senderId, newMessage.receiverId, newMessage.conversationId);
         if (newMessage.replyTo) {
-            newMessage.replyTo.text = decryptMessage(newMessage.replyTo.text, newMessage.replyTo.senderId, newMessage.replyTo.receiverId || (newMessage.replyTo.senderId === newMessage.senderId ? newMessage.receiverId : newMessage.senderId));
+            newMessage.replyTo.text = decryptMessage(newMessage.replyTo.text, newMessage.replyTo.senderId, newMessage.replyTo.receiverId, newMessage.replyTo.conversationId || newMessage.conversationId);
         }
 
-        const isChatActive = selectedUser && newMessage.senderId === selectedUser._id;
+        const isChatActive = selectedUser && (
+            newMessage.conversationId 
+                ? selectedUser._id === newMessage.conversationId 
+                : (newMessage.senderId === selectedUser._id || (typeof newMessage.senderId === "object" && newMessage.senderId._id === selectedUser._id))
+        );
         
+        const isSentByMe = (typeof newMessage.senderId === "object" ? newMessage.senderId._id : newMessage.senderId) === authUser?._id;
+
         if (isChatActive) {
             newMessage.seen = true;
-            setMessages((prevMessages)=>[...prevMessages,newMessage]);
-            axios.put(`/api/messages/mark/${newMessage._id}`)
-        } else {
+            setMessages((prevMessages) => {
+                if (prevMessages.some(msg => msg._id === newMessage._id)) return prevMessages;
+                return [...prevMessages, newMessage];
+            });
+            if (!isSentByMe) {
+                axios.put(`/api/messages/mark/${newMessage._id}`)
+            }
+        } else if (!isSentByMe) {
+            const unreadKey = newMessage.conversationId || (typeof newMessage.senderId === "object" ? newMessage.senderId._id : newMessage.senderId);
             setUnseenMessages((prevUnseenMessages)=>({
-                ...prevUnseenMessages,[newMessage.senderId] : 
-                prevUnseenMessages[newMessage.senderId] ? prevUnseenMessages[newMessage.senderId] + 1 : 1
+                ...prevUnseenMessages,[unreadKey] : 
+                prevUnseenMessages[unreadKey] ? prevUnseenMessages[unreadKey] + 1 : 1
             }))
         }
 
         // Trigger desktop notifications and play chime sound
-        if (!isChatActive || document.hidden) {
+        if ((!isChatActive || document.hidden) && !isSentByMe) {
             playNotificationSound();
 
             if (
@@ -274,9 +379,19 @@ const subscribeToMessages =async ()=>{
                 "Notification" in window && 
                 Notification.permission === "granted"
             ) {
-                const sender = users.find(u => u._id === newMessage.senderId);
-                const senderName = sender ? sender.fullname : "New Message";
-                const senderPic = sender ? sender.profilePic : "";
+                let senderName = "New Message";
+                let senderPic = "";
+                
+                if (newMessage.conversationId) {
+                    const group = conversations.find(c => c._id === newMessage.conversationId);
+                    const sender = users.find(u => u._id === (typeof newMessage.senderId === "object" ? newMessage.senderId._id : newMessage.senderId));
+                    senderName = group ? `${group.groupName} (${sender ? sender.fullname : "Someone"})` : "Group Message";
+                    senderPic = group ? group.groupAvatar : "";
+                } else {
+                    const sender = users.find(u => u._id === (typeof newMessage.senderId === "object" ? newMessage.senderId._id : newMessage.senderId));
+                    senderName = sender ? sender.fullname : "New Message";
+                    senderPic = sender ? sender.profilePic : "";
+                }
 
                 const notification = new Notification(senderName, {
                     body: newMessage.text || "📷 Sent an image",
@@ -285,25 +400,55 @@ const subscribeToMessages =async ()=>{
 
                 notification.onclick = () => {
                     window.focus();
-                    if (sender) {
-                        setSelectedUser(sender);
-                        setUnseenMessages(prev => ({ ...prev, [sender._id]: 0 }));
+                    if (newMessage.conversationId) {
+                        const group = conversations.find(c => c._id === newMessage.conversationId);
+                        if (group) {
+                            setSelectedUser(group);
+                            setUnseenMessages(prev => ({ ...prev, [newMessage.conversationId]: 0 }));
+                        }
+                    } else {
+                        const sender = users.find(u => u._id === (typeof newMessage.senderId === "object" ? newMessage.senderId._id : newMessage.senderId));
+                        if (sender) {
+                            setSelectedUser(sender);
+                            setUnseenMessages(prev => ({ ...prev, [sender._id]: 0 }));
+                        }
                     }
                 };
             }
         }
     })
 
-    socket.on("userTyping",({senderId})=>{
-        setTypingUsers(prev=>({...prev,[senderId]:true}))
+    socket.on("userTyping",({senderId, conversationId})=>{
+        if (conversationId) {
+            setTypingUsers(prev => ({
+                ...prev,
+                [conversationId]: {
+                    ...(prev[conversationId] || {}),
+                    [senderId]: true
+                }
+            }));
+        } else {
+            setTypingUsers(prev => ({...prev, [senderId]: true}));
+        }
     })
 
-    socket.on("userStopTyping",({senderId})=>{
-        setTypingUsers(prev=>{
-            const updated={...prev};
-            delete updated[senderId];
-            return updated;
-        })
+    socket.on("userStopTyping",({senderId, conversationId})=>{
+        if (conversationId) {
+            setTypingUsers(prev => {
+                const groupTyping = { ...(prev[conversationId] || {}) };
+                delete groupTyping[senderId];
+                return {
+                    ...prev,
+                    [conversationId]: groupTyping
+                };
+            });
+        } else {
+            setTypingUsers(prev => {
+                const updated = {...prev};
+                delete updated[senderId];
+                return updated;
+            });
+        }
     })
 
     socket.on("messageDeleted",({messageId})=>{
@@ -326,7 +471,6 @@ const subscribeToMessages =async ()=>{
 }
 
 //function to unsubscribe from messages
-
 const unsubscribeFromMessages = ()=>{
     if (socket) {
         socket.off("newMessage");
@@ -338,21 +482,56 @@ const unsubscribeFromMessages = ()=>{
     }
 }
 
-
 useEffect(()=>{
 subscribeToMessages();
 return ()=>unsubscribeFromMessages();
-},[socket,selectedUser])
+},[socket,selectedUser,conversations,users])
 
+useEffect(() => {
+    if (socket && conversations.length > 0) {
+        const conversationIds = conversations.map(c => c._id);
+        socket.emit("joinRooms", { conversationIds });
+    }
+}, [socket, conversations]);
 
+const value ={
+    messages,
+    users,
+    conversations,
+    selectedUser,
+    getUsers,
+    getConversations,
+    createGroup,
+    addGroupMembers,
+    removeGroupMember,
+    updateGroupInfo,
+    setMessages,
+    sendMessage,
+    getMessages,
+    setSelectedUser,
+    unseenMessages,
+    setUnseenMessages,
+    typingUsers,
+    emitTyping,
+    emitStopTyping,
+    deleteMessage,
+    editMessage,
+    reactToMessage,
+    replyingTo,
+    setReplyingTo,
+    searchResults,
+    isSearching,
+    searchQuery,
+    setSearchQuery,
+    searchMessages,
+    setSearchResults,
+    highlightMessageId,
+    setHighlightMessageId,
+    notificationSettings,
+    setNotificationSettings
+}
 
-
-  
-  const value ={
-messages,users,selectedUser,getUsers,setMessages,sendMessage,getMessages,setSelectedUser,unseenMessages,setUnseenMessages,typingUsers,emitTyping,emitStopTyping,deleteMessage,editMessage,reactToMessage,replyingTo,setReplyingTo,searchResults,isSearching,searchQuery,setSearchQuery,searchMessages,setSearchResults,highlightMessageId,setHighlightMessageId,notificationSettings,setNotificationSettings
-  }
-
-  return (<ChatContext.Provider value={value}>
+return (<ChatContext.Provider value={value}>
              {children}
     </ChatContext.Provider>)
 }

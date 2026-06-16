@@ -158,10 +158,14 @@ export const deleteMessage =async (req,res) => {
         message.image = "";
         await message.save();
 
-        //Emit to receiver for real-time sync
-        const receiverSocketId = userSocketMap[message.receiverId.toString()];
-        if (receiverSocketId) {
-            io.to(receiverSocketId).emit("messageDeleted",{messageId:id})
+        //Emit to receiver/room for real-time sync
+        if (message.conversationId) {
+            io.to(message.conversationId.toString()).emit("messageDeleted", {messageId:id});
+        } else if (message.receiverId) {
+            const receiverSocketId = userSocketMap[message.receiverId.toString()];
+            if (receiverSocketId) {
+                io.to(receiverSocketId).emit("messageDeleted",{messageId:id})
+            }
         }
 
         res.json({success:true,message:"Message deleted"})
@@ -213,10 +217,14 @@ export const editMessage =async (req,res) => {
         message.editedAt = new Date();
         await message.save();
 
-        //Emit to receiver for real-time sync
-        const receiverSocketId = userSocketMap[message.receiverId.toString()];
-        if (receiverSocketId) {
-            io.to(receiverSocketId).emit("messageEdited",{messageId:id,text:message.text,editedAt:message.editedAt})
+        //Emit to receiver/room for real-time sync
+        if (message.conversationId) {
+            io.to(message.conversationId.toString()).emit("messageEdited", {messageId:id, text:message.text, editedAt:message.editedAt});
+        } else if (message.receiverId) {
+            const receiverSocketId = userSocketMap[message.receiverId.toString()];
+            if (receiverSocketId) {
+                io.to(receiverSocketId).emit("messageEdited",{messageId:id,text:message.text,editedAt:message.editedAt})
+            }
         }
 
         res.json({success:true,message:"Message edited",updatedMessage:message})
@@ -267,14 +275,18 @@ export const reactToMessage =async (req,res) => {
 
         await message.save();
 
-        //Emit to both sender and receiver for real-time sync
-        const otherUserId = message.senderId.toString() === userId.toString()
-            ? message.receiverId.toString()
-            : message.senderId.toString();
+        //Emit to receiver/room for real-time sync
+        if (message.conversationId) {
+            io.to(message.conversationId.toString()).emit("messageReaction", {messageId:id, reactions:message.reactions});
+        } else {
+            const otherUserId = message.senderId.toString() === userId.toString()
+                ? message.receiverId.toString()
+                : message.senderId.toString();
 
-        const otherSocketId = userSocketMap[otherUserId];
-        if (otherSocketId) {
-            io.to(otherSocketId).emit("messageReaction",{messageId:id,reactions:message.reactions})
+            const otherSocketId = userSocketMap[otherUserId];
+            if (otherSocketId) {
+                io.to(otherSocketId).emit("messageReaction",{messageId:id,reactions:message.reactions})
+            }
         }
 
         res.json({success:true,reactions:message.reactions})
