@@ -8,8 +8,9 @@ import messageRouter from "./routes/messageRoutes.js";
 import { Server } from "socket.io";
 import User from "./models/User.js";
 
-//Allowed origins for CORS (set CLIENT_URL in .env for production)
-const allowedOrigins = process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",") : ["*"];
+const allowedOrigins = process.env.CLIENT_URL 
+  ? process.env.CLIENT_URL.split(",") 
+  : ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "http://localhost:3000"];
 
 //Create Express app and Http server
 
