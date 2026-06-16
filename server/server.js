@@ -5,6 +5,7 @@ import http from "http";
 import { connectDB } from "./lib/db.js";
 import userRouter from "./routes/userRoutes.js";
 import messageRouter from "./routes/messageRoutes.js";
+import conversationRouter from "./routes/conversationRoutes.js";
 import { Server } from "socket.io";
 import User from "./models/User.js";
 
@@ -70,6 +71,7 @@ app.use(cors({origin:allowedOrigins}))
 app.use("/api/status",(re,res)=>res.send("Server is Live"));
 app.use("/api/auth", userRouter)
 app.use("/api/messages",messageRouter)
+app.use("/api/conversations",conversationRouter)
 
 
 //Connect to Mongodb
