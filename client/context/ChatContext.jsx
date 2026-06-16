@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import axios from "axios"
 import toast from "react-hot-toast";
+import { encryptMessage, decryptMessage } from "../src/lib/encryption.js";
 
 
 
@@ -66,7 +67,7 @@ export const ChatProvider = ({children})=>{
     }
   };
   
-  const {socket,axios}=useContext(AuthContext);
+  const {socket,axios,authUser}=useContext(AuthContext);
 
 
 //function to get all users for sidebar
@@ -92,9 +93,21 @@ const searchMessages = async (query) => {
     }
     setIsSearching(true);
     try {
-        const { data } = await axios.get("/api/messages/search", { params: { q: query } });
+        // Fetch recent messages securely (E2EE Client Search)
+        const { data } = await axios.get("/api/messages/recent");
         if (data.success) {
-            setSearchResults(data.messages);
+            // Decrypt all messages locally
+            const decrypted = data.messages.map(msg => ({
+                ...msg,
+                text: decryptMessage(msg.text, msg.senderId._id, msg.receiverId._id)
+            }));
+            
+            // Search client-side on decrypted text
+            const filtered = decrypted.filter(msg => 
+                msg.text && msg.text.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            setSearchResults(filtered);
         } else {
             toast.error(data.message);
         }
@@ -111,10 +124,17 @@ const getMessages = async (userId) => {
     try {
         const {data} = await axios.get(`/api/messages/${userId}`);
         if (data.success) {
-            setMessages(data.messages)
+            // Decrypt fetched messages
+            const decryptedMessages = data.messages.map(msg => ({
+                ...msg,
+                text: decryptMessage(msg.text, msg.senderId, msg.receiverId),
+                replyTo: msg.replyTo ? {
+                    ...msg.replyTo,
+                    text: decryptMessage(msg.replyTo.text, msg.replyTo.senderId, msg.senderId === userId ? msg.receiverId : msg.senderId)
+                } : null
+            }));
+            setMessages(decryptedMessages)
         }
-
-
     } catch (error) {
         toast.error(error.message)
     }
@@ -125,12 +145,25 @@ const getMessages = async (userId) => {
 const sendMessage =async (messageData) => {
     try {
         const payload = {...messageData};
+        if (payload.text && authUser && selectedUser) {
+            // Encrypt message text client-side before sending
+            payload.text = encryptMessage(payload.text, authUser._id, selectedUser._id);
+        }
         if (replyingTo) {
             payload.replyTo = replyingTo._id;
         }
         const {data} = await axios.post(`/api/messages/send/${selectedUser._id}`,payload);
         if (data.success){
-            setMessages((prevMessages)=>[...prevMessages,data.newMessage])
+            // Decrypt new message so it renders locally in plaintext
+            const decryptedNewMsg = {
+                ...data.newMessage,
+                text: decryptMessage(data.newMessage.text, data.newMessage.senderId, data.newMessage.receiverId),
+                replyTo: replyingTo ? {
+                    ...replyingTo,
+                    text: replyingTo.text
+                } : null
+            };
+            setMessages((prevMessages)=>[...prevMessages,decryptedNewMsg])
             setReplyingTo(null)
         }
         else{
@@ -212,6 +245,12 @@ const subscribeToMessages =async ()=>{
     if(!socket) return;
 
     socket.on("newMessage",(newMessage)=>{
+        // Decrypt incoming message text immediately
+        newMessage.text = decryptMessage(newMessage.text, newMessage.senderId, newMessage.receiverId);
+        if (newMessage.replyTo) {
+            newMessage.replyTo.text = decryptMessage(newMessage.replyTo.text, newMessage.replyTo.senderId, newMessage.replyTo.receiverId || (newMessage.replyTo.senderId === newMessage.senderId ? newMessage.receiverId : newMessage.senderId));
+        }
+
         const isChatActive = selectedUser && newMessage.senderId === selectedUser._id;
         
         if (isChatActive) {

@@ -264,39 +264,26 @@ export const reactToMessage =async (req,res) => {
     }
 }
 
-// Search messages (full-text search with regex for partial matching)
-export const searchMessages = async (req, res) => {
+// Get recent messages for E2EE client search (limit 1000)
+export const getRecentMessages = async (req, res) => {
     try {
-        const { q } = req.query;
         const userId = req.user._id;
 
-        if (!q || q.trim() === "") {
-            return res.json({ success: true, messages: [] });
-        }
-
         const messages = await Message.find({
-            $and: [
-                {
-                    $or: [
-                        { senderId: userId },
-                        { receiverId: userId }
-                    ]
-                },
-                {
-                    text: { $regex: q, $options: "i" }
-                },
-                {
-                    deleted: false
-                }
-            ]
+            $or: [
+                { senderId: userId },
+                { receiverId: userId }
+            ],
+            deleted: false
         })
         .sort({ createdAt: -1 })
+        .limit(1000)
         .populate("senderId", "fullname profilePic")
         .populate("receiverId", "fullname profilePic");
 
         res.json({ success: true, messages });
     } catch (error) {
-        console.log(error.message)
+        console.log(error.message);
         res.json({ success: false, message: error.message });
     }
 }
