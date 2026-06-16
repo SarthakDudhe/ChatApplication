@@ -37,6 +37,7 @@ const Sidebar = () => {
   const [groupName, setGroupName] = useState("");
   const [groupAvatar, setGroupAvatar] = useState("");
   const [selectedParticipants, setSelectedParticipants] = useState([]);
+  const [activePreviewImage, setActivePreviewImage] = useState(null);
 
   const groupConversations = conversations.filter(c => c.isGroup);
   const filteredGroups = input 
@@ -132,7 +133,15 @@ const Sidebar = () => {
             <div className='flex justify-between items-center'>
                 <div className='flex items-center gap-2.5 cursor-pointer' onClick={() => navigate('/profile')}>
                     <div className='relative'>
-                      <img src={authUser?.profilePic || assets.avatar_icon} alt="Avatar" className='w-9 h-9 rounded-full object-cover border border-white/10 shadow-sm' />
+                      <img 
+                        src={authUser?.profilePic || assets.avatar_icon} 
+                        alt="Avatar" 
+                        className='w-9 h-9 rounded-full object-cover border border-white/10 shadow-sm hover:scale-105 transition-transform duration-200 cursor-pointer' 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActivePreviewImage({ img: authUser?.profilePic || assets.avatar_icon, name: authUser?.fullname || 'Profile' });
+                        }}
+                      />
                       <span className='absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-500 border border-[#242424]'></span>
                     </div>
                     <div className='flex flex-col text-left leading-none'>
@@ -249,7 +258,15 @@ const Sidebar = () => {
                     )}
 
                     <div className='relative flex-shrink-0'>
-                      <img src={group.groupAvatar || assets.avatar_icon} alt="" className='w-9 h-9 rounded-full object-cover border border-white/10 shadow-sm'/>
+                      <img 
+                        src={group.groupAvatar || assets.avatar_icon} 
+                        alt="" 
+                        className='w-9 h-9 rounded-full object-cover border border-white/10 shadow-sm hover:scale-105 transition-transform duration-200 cursor-pointer'
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActivePreviewImage({ img: group.groupAvatar || assets.avatar_icon, name: group.groupName });
+                        }}
+                      />
                     </div>
                     <div className='flex flex-col leading-tight flex-1 min-w-0'>
                       <p className='font-semibold text-sm text-[#FAF9F6] truncate'>{group.groupName}</p>
@@ -297,7 +314,15 @@ const Sidebar = () => {
                   )}
 
                   <div className='relative flex-shrink-0'>
-                    <img src={user?.profilePic ||assets.avatar_icon} alt="" className='w-9 h-9 rounded-full object-cover border border-white/10 shadow-sm'/>
+                    <img 
+                      src={user?.profilePic || assets.avatar_icon} 
+                      alt="" 
+                      className='w-9 h-9 rounded-full object-cover border border-white/10 shadow-sm hover:scale-105 transition-transform duration-200 cursor-pointer'
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActivePreviewImage({ img: user.profilePic || assets.avatar_icon, name: user.fullname });
+                      }}
+                    />
                     {onlineUser.includes(user._id) && (
                       <span className='absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-[#242424] animate-pulse'></span>
                     )}
@@ -445,6 +470,61 @@ const Sidebar = () => {
                 className="px-4 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 disabled:opacity-50 text-sm font-semibold transition-colors shadow-lg shadow-violet-500/10 text-white"
               >
                 Create Group
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Profile Image Preview Modal */}
+      {activePreviewImage && (
+        <div 
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/85 backdrop-blur-md transition-all duration-300 animate-fade-in"
+          onClick={() => setActivePreviewImage(null)}
+        >
+          <div 
+            className="relative max-w-sm w-full mx-4 flex flex-col items-center gap-4 bg-[#242424]/90 backdrop-blur-xl border border-white/10 p-5 rounded-2xl shadow-2xl animate-fade-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header / Name */}
+            <div className="w-full flex justify-between items-center border-b border-white/5 pb-3">
+              <h3 className="text-sm font-semibold text-[#FAF9F6] truncate max-w-[80%]">
+                {activePreviewImage.name}
+              </h3>
+              <button 
+                onClick={() => setActivePreviewImage(null)} 
+                className="text-[#8E8E93] hover:text-[#FAF9F6] bg-white/5 hover:bg-white/10 w-7 h-7 flex items-center justify-center rounded-full transition-all duration-200"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Image Container */}
+            <div className="relative w-full aspect-square max-h-[300px] overflow-hidden rounded-xl border border-white/5 bg-[#1A1A1A]">
+              <img 
+                src={activePreviewImage.img} 
+                alt={activePreviewImage.name} 
+                className="w-full h-full object-cover animate-fade-in"
+              />
+            </div>
+            
+            {/* Action Buttons / Details */}
+            <div className="w-full flex justify-end gap-2.5 mt-1">
+              <button 
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = activePreviewImage.img;
+                  link.download = `${activePreviewImage.name.replace(/\s+/g, '_')}_profile.png`;
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
+                className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold transition-colors text-[#FAF9F6] flex items-center gap-1.5 hover:text-[#D4AF37]"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-[#D4AF37]">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
+                Save Image
               </button>
             </div>
           </div>
