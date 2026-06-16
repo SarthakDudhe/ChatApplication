@@ -137,7 +137,9 @@ useEffect(() => {
       clearTimeout(clearTimer);
     };
   }
-}, [highlightMessageId, message  return selectedUser ?  (
+}, [highlightMessageId, messages]);
+
+  return selectedUser ?  (
     <div className='h-full flex flex-col relative bg-[#0a0612]/30 backdrop-blur-md overflow-hidden'>
       {/* HEADER */}
       <div className='flex items-center justify-between p-4 px-6 border-b border-white/5 bg-[#16112c]/35 backdrop-blur-md shadow-sm flex-shrink-0'>
@@ -194,7 +196,7 @@ useEffect(() => {
                        <>
                          <button onClick={()=>handleStartEdit(msg)} className='p-1 rounded-full text-neutral-400 hover:text-blue-400 hover:bg-white/10 text-xs transition-colors cursor-pointer' title='Edit'>✏️</button>
                          <button onClick={()=>handleDelete(msg._id)} className='p-1 rounded-full text-neutral-400 hover:text-red-400 hover:bg-white/10 text-xs transition-colors cursor-pointer' title='Delete'>🗑️</button>
-                       </                       >
+                       </>
                      )}
                    </div>
 
