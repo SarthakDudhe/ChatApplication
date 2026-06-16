@@ -1,4 +1,5 @@
  import Message from "../models/Message.js";
+import Conversation from "../models/Conversation.js";
 import User from "../models/User.js";
 import cloudinary from "../lib/cloudinary.js";
 import { io,userSocketMap } from "../server.js";
@@ -33,23 +34,32 @@ export const getUserForSidebar= async (req,res) => {
 }
 
 
-//Get all messages for selected user
-
+//Get all messages for selected user or group
 export const getMessages =async (req,res) => {
     try {
-        const {id:selectedUserId}=req.params;
+        const {id:chatId}=req.params;
         const myId=req.user._id;
 
-        const messages= await Message.find({
-            $or:[
-                {senderId:myId,receiverId:selectedUserId},
-                {senderId:selectedUserId,receiverId:myId},
-            ]
-        }).populate('replyTo','text image senderId deleted')
-     await Message.updateMany({senderId:selectedUserId,receiverId:myId},{seen:true});
+        const conversation = await Conversation.findById(chatId);
+        if (conversation && conversation.isGroup) {
+            const messages = await Message.find({ conversationId: chatId })
+                .populate('replyTo', 'text image senderId deleted')
+                .populate('senderId', 'fullname profilePic');
 
-     res.json({success:true,messages})
+            await Message.updateMany({ conversationId: chatId, senderId: { $ne: myId } }, { seen: true });
+            return res.json({ success: true, messages });
+        } else {
+            const messages = await Message.find({
+                $or: [
+                    { senderId: myId, receiverId: chatId },
+                    { senderId: chatId, receiverId: myId },
+                ]
+            }).populate('replyTo', 'text image senderId deleted')
+              .populate('senderId', 'fullname profilePic');
 
+            await Message.updateMany({ senderId: chatId, receiverId: myId }, { seen: true });
+            return res.json({ success: true, messages });
+        }
     } catch (error) {
          console.log(error.message)
         res.json({success:false,message:error.message})
@@ -71,42 +81,53 @@ export const markMessageAsSeen =async (req,res) => {
     }
 }
 
-//Send messages to selected users
+//Send messages to selected users or group
 
 export const sendMessage=async (req,res) => {
     try {
-        const {text,image,replyTo}= req.body;
-        const receiverId =req.params.id;
+        const {text,image,replyTo,conversationId}= req.body;
+        const targetId =req.params.id;
         const senderId=req.user._id;
-let imageUrl;
+        let imageUrl;
 
-if (image) {
-    const uploadResponse = await cloudinary.uploader.upload(image)
-    imageUrl =uploadResponse.secure_url;
-}
+        if (image) {
+            const uploadResponse = await cloudinary.uploader.upload(image)
+            imageUrl =uploadResponse.secure_url;
+        }
 
-let newMessage = await Message.create({
-    senderId,
-    receiverId,
-    text,
-    image:imageUrl,
-    replyTo:replyTo || null
-})
+        let newMessageData = {
+            senderId,
+            text,
+            image:imageUrl,
+            replyTo:replyTo || null
+        };
 
-//Populate replyTo before sending
-if (replyTo) {
-    newMessage = await newMessage.populate('replyTo','text image senderId deleted')
-}
+        if (conversationId) {
+            newMessageData.conversationId = conversationId;
+        } else {
+            newMessageData.receiverId = targetId;
+        }
 
-//Emit the new messages to the receivers socket
+        let newMessage = await Message.create(newMessageData);
 
-const receiverSocketId = userSocketMap[receiverId];
-if (receiverSocketId) {
-    io.to(receiverSocketId).emit("newMessage",newMessage)
-}
+        //Populate replyTo before sending
+        if (replyTo) {
+            newMessage = await newMessage.populate('replyTo','text image senderId deleted')
+        }
 
+        newMessage = await newMessage.populate('senderId', 'fullname profilePic');
 
-res.json({success:true,newMessage})
+        //Emit the new messages
+        if (conversationId) {
+            io.to(conversationId.toString()).emit("newMessage", newMessage);
+        } else {
+            const receiverSocketId = userSocketMap[targetId];
+            if (receiverSocketId) {
+                io.to(receiverSocketId).emit("newMessage",newMessage)
+            }
+        }
+
+        res.json({success:true,newMessage})
 
     } catch (error) {
         console.log(error.message)

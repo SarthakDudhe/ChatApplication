@@ -36,17 +36,35 @@ io.on("connection",(socket)=>{
 //Emit online users to all connected clients
 io.emit("getOnlineUsers",Object.keys(userSocketMap));
 
-socket.on("typing",({receiverId})=>{
-    const receiverSocketId = userSocketMap[receiverId];
-    if(receiverSocketId){
-        io.to(receiverSocketId).emit("userTyping",{senderId:userId});
+// Join room for conversations (E2EE/Group)
+socket.on("joinRooms", ({ conversationIds }) => {
+    if (Array.isArray(conversationIds)) {
+        conversationIds.forEach(id => {
+            socket.join(id.toString());
+            console.log(`User ${userId} joined room: ${id}`);
+        });
     }
 });
 
-socket.on("stopTyping",({receiverId})=>{
-    const receiverSocketId = userSocketMap[receiverId];
-    if(receiverSocketId){
-        io.to(receiverSocketId).emit("userStopTyping",{senderId:userId});
+socket.on("typing",({receiverId, conversationId})=>{
+    if (conversationId) {
+        socket.to(conversationId.toString()).emit("userTyping",{senderId:userId, conversationId});
+    } else if (receiverId) {
+        const receiverSocketId = userSocketMap[receiverId];
+        if(receiverSocketId){
+            io.to(receiverSocketId).emit("userTyping",{senderId:userId});
+        }
+    }
+});
+
+socket.on("stopTyping",({receiverId, conversationId})=>{
+    if (conversationId) {
+        socket.to(conversationId.toString()).emit("userStopTyping",{senderId:userId, conversationId});
+    } else if (receiverId) {
+        const receiverSocketId = userSocketMap[receiverId];
+        if(receiverSocketId){
+            io.to(receiverSocketId).emit("userStopTyping",{senderId:userId});
+        }
     }
 });
 
