@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import assets from '../assets/assets'
-import { formatLastSeen } from '../lib/utils'
+import { formatLastSeen, compressImage } from '../lib/utils'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
 import { ChatContext } from '../../context/ChatContext'
@@ -381,12 +381,15 @@ const Sidebar = () => {
                       type="file" 
                       id="group-avatar-input" 
                       accept="image/*" 
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         const file = e.target.files[0];
                         if (file) {
-                          const reader = new FileReader();
-                          reader.onloadend = () => setGroupAvatar(reader.result);
-                          reader.readAsDataURL(file);
+                          try {
+                            const compressed = await compressImage(file, 200);
+                            setGroupAvatar(compressed);
+                          } catch (err) {
+                            toast.error("Error processing image");
+                          }
                         }
                       }} 
                       hidden 

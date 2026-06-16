@@ -2,6 +2,8 @@ import React, { useContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import assets from '../assets/assets'
 import { AuthContext } from '../../context/AuthContext';
+import { compressImage } from '../lib/utils';
+import toast from 'react-hot-toast';
 
 const ProfilePage = () => {
   const {authUser,updateProfile}=useContext(AuthContext)
@@ -18,19 +20,19 @@ const ProfilePage = () => {
     }
   }, [authUser]);
 
-  const handleSubmit= async(e)=>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if(!selectedimage) {
-      await updateProfile({fullname:name,bio})
+    try {
+      if (!selectedimage) {
+        await updateProfile({ fullname: name, bio });
+        navigate('/');
+        return;
+      }
+      const base64Image = await compressImage(selectedimage, 300);
+      await updateProfile({ profilePic: base64Image, fullname: name, bio });
       navigate('/');
-      return;
-    }
-    const reader =new FileReader();
-    reader.readAsDataURL(selectedimage);
-    reader.onload = async () => {
-      const base64Image = reader.result;
-      await updateProfile({profilePic:base64Image,fullname:name,bio})
-      navigate('/')
+    } catch (error) {
+      toast.error("Error processing image file");
     }
   }
 

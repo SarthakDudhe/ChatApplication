@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import assets from "../assets/assets"
-import { formatMessageTime, formatDateHeader } from '../lib/utils'
+import { formatMessageTime, formatDateHeader, compressImage } from '../lib/utils'
 import { ChatContext } from '../../context/ChatContext'
 import { AuthContext } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
@@ -490,15 +490,16 @@ const ChatContainer = () => {
                         type="file" 
                         id="edit-group-avatar" 
                         accept="image/*" 
-                        onChange={(e) => {
+                        onChange={async (e) => {
                           const file = e.target.files[0];
                           if (file) {
-                            const reader = new FileReader();
-                            reader.onloadend = () => {
-                              setNewGroupAvatar(reader.result);
-                              updateGroupInfo(selectedUser._id, newGroupName, reader.result);
-                            };
-                            reader.readAsDataURL(file);
+                            try {
+                              const compressed = await compressImage(file, 200);
+                              setNewGroupAvatar(compressed);
+                              updateGroupInfo(selectedUser._id, newGroupName, compressed);
+                            } catch (err) {
+                              toast.error("Error processing image");
+                            }
                           }
                         }} 
                         hidden 
