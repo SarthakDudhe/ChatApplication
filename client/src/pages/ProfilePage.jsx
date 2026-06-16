@@ -35,15 +35,15 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className='min-h-screen bg-[#121212] flex items-center justify-center p-6 select-none'>
-      <div className='w-full max-w-2xl glass-panel text-gray-300 flex items-center justify-between max-sm:flex-col-reverse rounded-2xl border border-white/10 shadow-2xl p-8 md:p-12 gap-8 animate-fade-in'>
+    <div className='min-h-screen bg-[#1A1A1A] flex items-center justify-center p-6 select-none'>
+      <div className='w-full max-w-2xl glass-panel text-[#8E8E93] flex items-center justify-between max-sm:flex-col-reverse rounded-2xl border border-white/10 shadow-2xl p-8 md:p-12 gap-8 animate-fade-in'>
         <form onSubmit={handleSubmit} className='flex flex-col gap-6 flex-1 w-full'>
           <div>
-            <h3 className='text-xl font-bold text-white bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent'>Profile Details</h3>
-            <p className='text-xs text-neutral-400 mt-1'>Update your presence on QuickChat</p>
+            <h3 className='text-xl font-bold bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent'>Profile Details</h3>
+            <p className='text-xs text-[#8E8E93] mt-1'>Update your presence on QuickChat</p>
           </div>
 
-          <label htmlFor="avatar" className='flex items-center gap-4 cursor-pointer text-sm font-semibold text-neutral-300 hover:text-violet-400 transition-colors'>
+          <label htmlFor="avatar" className='flex items-center gap-4 cursor-pointer text-sm font-semibold text-[#FAF9F6] hover:text-violet-400 transition-colors'>
             <input onChange={(e)=>setselectedimage(e.target.files[0])} type="file" id="avatar" accept='.png, .jpg, .jpeg' hidden />
             <img 
               src={selectedimage ? URL.createObjectURL(selectedimage) : authUser?.profilePic || assets.avatar_icon } 
@@ -54,25 +54,25 @@ const ProfilePage = () => {
           </label>
           
           <div className='flex flex-col gap-1.5'>
-            <label className='text-xs text-neutral-400 font-semibold uppercase tracking-wider'>Display Name</label>
+            <label className='text-xs text-[#8E8E93] font-semibold uppercase tracking-wider'>Display Name</label>
             <input 
               onChange={(e)=>setname(e.target.value)} 
               value={name} 
               type="text" 
               required 
               placeholder='Your Name' 
-              className='p-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-cyan/50 focus:ring-1 focus:ring-accent-cyan/50 text-white placeholder-neutral-500 transition-all text-sm'
+              className='p-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-gold/50 focus:ring-1 focus:ring-accent-gold/50 text-[#FAF9F6] placeholder-neutral-500 transition-all text-sm'
             />
           </div>
 
           <div className='flex flex-col gap-1.5'>
-            <label className='text-xs text-neutral-400 font-semibold uppercase tracking-wider'>Status Bio</label>
+            <label className='text-xs text-[#8E8E93] font-semibold uppercase tracking-wider'>Status Bio</label>
             <textarea 
               onChange={(e)=>setBio(e.target.value)} 
               value={bio} 
               rows={4} 
               placeholder='Write something about yourself...' 
-              className='p-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-cyan/50 focus:ring-1 focus:ring-accent-cyan/50 text-white placeholder-neutral-500 transition-all text-sm resize-none'
+              className='p-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-gold/50 focus:ring-1 focus:ring-accent-gold/50 text-[#FAF9F6] placeholder-neutral-500 transition-all text-sm resize-none'
             ></textarea>
           </div>
             
@@ -80,13 +80,13 @@ const ProfilePage = () => {
             <button 
               type="button" 
               onClick={() => navigate('/')} 
-              className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-semibold transition-colors text-white"
+              className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-semibold transition-colors text-[#FAF9F6]"
             >
               Cancel
             </button>
             <button 
               type="submit" 
-              className='px-6 py-2.5 text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl cursor-pointer hover:shadow-lg hover:shadow-violet-500/10 active:scale-[0.99] transition-all'
+              className='px-6 py-2.5 text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 text-[#FAF9F6] rounded-xl cursor-pointer hover:shadow-lg hover:shadow-violet-500/10 active:scale-[0.99] transition-all'
             >
               Save Changes
             </button>
@@ -99,7 +99,7 @@ const ProfilePage = () => {
             alt="Profile Avatar" 
             className='w-40 h-40 rounded-full border-2 border-white/10 shadow-2xl object-cover max-sm:mt-4' 
           />
-          <span className='text-[10px] text-neutral-500 font-semibold uppercase tracking-widest'>Current Photo</span>
+          <span className='text-[10px] text-[#8E8E93] font-semibold uppercase tracking-widest'>Current Photo</span>
         </div>
       </div>
     </div>
