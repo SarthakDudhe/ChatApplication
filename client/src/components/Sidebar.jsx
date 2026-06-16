@@ -146,7 +146,7 @@ const Sidebar = () => {
                         <img src={assets.menu_icon} alt="menu-icon" className='max-h-5 cursor-pointer opacity-85 hover:opacity-100 transition-opacity' />
                         
                         {/* Glassmorphic Dropdown */}
-                        <div className='absolute top-full right-0 z-20 w-52 p-4 rounded-xl bg-[#130f24]/90 border border-white/10 text-gray-100 hidden group-hover:block shadow-2xl backdrop-blur-xl animate-fade-in'>
+                        <div className='absolute top-full right-0 z-20 w-52 p-4 rounded-xl bg-[#1c1c1e]/95 border border-white/10 text-gray-100 hidden group-hover:block shadow-2xl backdrop-blur-xl animate-fade-in'>
                           <p onClick={()=>navigate('/profile')} className='cursor-pointer text-sm hover:text-violet-400 transition-colors font-medium flex items-center gap-2'>
                             👤 Edit Profile
                           </p>
@@ -240,7 +240,7 @@ const Sidebar = () => {
                       )}
                     </div>
                     {unseenMessages[group._id] > 0 && (
-                      <p className='absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold h-4.5 w-4.5 flex justify-center items-center rounded-full bg-violet-600 border border-violet-400 shadow-md animate-bounce text-white'>
+                      <p className='absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold h-4.5 w-4.5 flex justify-center items-center rounded-full bg-indigo-600 border border-indigo-400 shadow-md animate-bounce text-white'>
                         {unseenMessages[group._id]}
                       </p>
                     )}
@@ -286,7 +286,7 @@ const Sidebar = () => {
                     )}
                   </div>
                   {unseenMessages[user._id]>0 && (
-                    <p className='absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold h-4.5 w-4.5 flex justify-center items-center rounded-full bg-violet-600 border border-violet-400 shadow-md animate-bounce text-white'>
+                    <p className='absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold h-4.5 w-4.5 flex justify-center items-center rounded-full bg-indigo-600 border border-indigo-400 shadow-md animate-bounce text-white'>
                       {unseenMessages[user._id]}
                     </p>
                   )}

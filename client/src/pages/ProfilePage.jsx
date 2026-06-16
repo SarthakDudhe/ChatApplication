@@ -1,178 +1,109 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import assets, { imagesDummyData } from '../assets/assets'
+import assets from '../assets/assets'
 import { AuthContext } from '../../context/AuthContext';
+
 const ProfilePage = () => {
-
   const {authUser,updateProfile}=useContext(AuthContext)
+  const navigate=useNavigate();
 
-const [selectedimage,setselectedimage]=useState(null);
-const navigate=useNavigate();
-const [name,setname]=useState(authUser.fullname);
-const [bio,setBio]=useState(authUser.bio)
+  const [selectedimage,setselectedimage]=useState(null);
+  const [name,setname]=useState("");
+  const [bio,setBio]=useState("");
 
+  useEffect(() => {
+    if (authUser) {
+      setname(authUser.fullname || "");
+      setBio(authUser.bio || "");
+    }
+  }, [authUser]);
 
-const handleSubmit= async(e)=>{
-e.preventDefault();
-if(!selectedimage)
-{
-  await updateProfile({fullname:name,bio})
-  console.log(name)
-  navigate('/');
-  return;
-}
-const reader =new FileReader();
-reader.readAsDataURL(selectedimage);
-reader.onload = async () => {
-  const base64Image = reader.result;
-  await updateProfile({profilePic:base64Image,fullname:name,bio})
-  navigate('/')
-}
-}
-
-
+  const handleSubmit= async(e)=>{
+    e.preventDefault();
+    if(!selectedimage) {
+      await updateProfile({fullname:name,bio})
+      navigate('/');
+      return;
+    }
+    const reader =new FileReader();
+    reader.readAsDataURL(selectedimage);
+    reader.onload = async () => {
+      const base64Image = reader.result;
+      await updateProfile({profilePic:base64Image,fullname:name,bio})
+      navigate('/')
+    }
+  }
 
   return (
-    <div className='min-h-screen bg-cover bg-no-repeat flex items-center justify-center'>
-       
-      <div className='w-5/6 max-w-2xl backdrop-blur-2xl text-gray-300 border-2 border-gray-600 flex items-center justify-between max-sm:flex-col-reverse rounded-lg'>
-        <form onSubmit={handleSubmit} className='flex flex-col gap-5 p-10 flex-1'>
-         <h3 className='text-lg'>Profile Details</h3>
-         <label htmlFor="avatar" className='flex items-center gap-3 cursor-pointer'>
-          <input onChange={(e)=>setselectedimage(e.target.files[0])} type="file" name="" id="avatar" accept='.png, .jpg, .jpeg' hidden />
-           <img src={selectedimage ? URL.createObjectURL(selectedimage): assets.avatar_icon } className={`w-12 h-12 ${selectedimage && 'rounded-full'}`}  />
-           Upload Profile Image
-         </label>
-         
-         <input onChange={(e)=>setname(e.target.value)} value={name} 
-         type="text" name="" id="" required placeholder='Your Name' className='p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500' />
+    <div className='min-h-screen bg-[#121212] flex items-center justify-center p-6 select-none'>
+      <div className='w-full max-w-2xl glass-panel text-gray-300 flex items-center justify-between max-sm:flex-col-reverse rounded-2xl border border-white/10 shadow-2xl p-8 md:p-12 gap-8 animate-fade-in'>
+        <form onSubmit={handleSubmit} className='flex flex-col gap-6 flex-1 w-full'>
+          <div>
+            <h3 className='text-xl font-bold text-white bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent'>Profile Details</h3>
+            <p className='text-xs text-neutral-400 mt-1'>Update your presence on QuickChat</p>
+          </div>
 
-        <textarea onChange={(e)=>setBio(e.target.value)} value={bio}  rows={4} placeholder='Write Profile Bio'  className='p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500' ></textarea>
+          <label htmlFor="avatar" className='flex items-center gap-4 cursor-pointer text-sm font-semibold text-neutral-300 hover:text-violet-400 transition-colors'>
+            <input onChange={(e)=>setselectedimage(e.target.files[0])} type="file" id="avatar" accept='.png, .jpg, .jpeg' hidden />
+            <img 
+              src={selectedimage ? URL.createObjectURL(selectedimage) : authUser?.profilePic || assets.avatar_icon } 
+              className='w-14 h-14 rounded-full object-cover border border-white/10 shadow-md'
+              alt="Avatar Preview"
+            />
+            <span>Upload Profile Image</span>
+          </label>
           
-      <button type="submit" className='p-2 text-lg bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md cursor-pointer'>Save</button>
-        </form>
-         <img src={authUser?.profilePic || assets.logo_icon} alt="" className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10  ${selectedimage && 'rounded-full'}`} />
-      
-      </div>
+          <div className='flex flex-col gap-1.5'>
+            <label className='text-xs text-neutral-400 font-semibold uppercase tracking-wider'>Display Name</label>
+            <input 
+              onChange={(e)=>setname(e.target.value)} 
+              value={name} 
+              type="text" 
+              required 
+              placeholder='Your Name' 
+              className='p-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-cyan/50 focus:ring-1 focus:ring-accent-cyan/50 text-white placeholder-neutral-500 transition-all text-sm'
+            />
+          </div>
 
+          <div className='flex flex-col gap-1.5'>
+            <label className='text-xs text-neutral-400 font-semibold uppercase tracking-wider'>Status Bio</label>
+            <textarea 
+              onChange={(e)=>setBio(e.target.value)} 
+              value={bio} 
+              rows={4} 
+              placeholder='Write something about yourself...' 
+              className='p-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-cyan/50 focus:ring-1 focus:ring-accent-cyan/50 text-white placeholder-neutral-500 transition-all text-sm resize-none'
+            ></textarea>
+          </div>
+            
+          <div className='flex justify-end gap-3 border-t border-white/5 pt-4 mt-2'>
+            <button 
+              type="button" 
+              onClick={() => navigate('/')} 
+              className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-semibold transition-colors text-white"
+            >
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              className='px-6 py-2.5 text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl cursor-pointer hover:shadow-lg hover:shadow-violet-500/10 active:scale-[0.99] transition-all'
+            >
+              Save Changes
+            </button>
+          </div>
+        </form>
+
+        <div className='flex flex-col items-center gap-4 flex-shrink-0'>
+          <img 
+            src={selectedimage ? URL.createObjectURL(selectedimage) : authUser?.profilePic || assets.avatar_icon} 
+            alt="Profile Avatar" 
+            className='w-40 h-40 rounded-full border-2 border-white/10 shadow-2xl object-cover max-sm:mt-4' 
+          />
+          <span className='text-[10px] text-neutral-500 font-semibold uppercase tracking-widest'>Current Photo</span>
+        </div>
+      </div>
     </div>
   )
 }
 
-export default ProfilePage
-
-
-
-// import React, { useContext, useEffect, useState } from 'react'
-// import { useNavigate } from 'react-router-dom';
-// import assets from '../assets/assets';
-// import { AuthContext } from '../../context/AuthContext';
-
-// const ProfilePage = () => {
-//   const { authUser, updateProfile } = useContext(AuthContext);
-
-//   const navigate = useNavigate();
-
-//   // Local states
-//   const [selectedImage, setSelectedImage] = useState(null);
-//   const [name, setName] = useState('');
-//   const [bio, setBio] = useState('');
-
-//   // Load user data once context is ready
-//   useEffect(() => {
-//     if (authUser) {
-//       setName(authUser.fullname || '');
-//       setBio(authUser.bio || '');
-//     }
-//   }, [authUser]);
-
-//   // Handle Profile Update
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     if (!selectedImage) {
-//       await updateProfile({ fullname: name, bio });
-//       navigate('/');
-//       return;
-//     }
-
-//     const reader = new FileReader();
-//     reader.readAsDataURL(selectedImage);
-//     reader.onload = async () => {
-//       const base64Image = reader.result;
-//       await updateProfile({ profilePic: base64Image, fullname: name, bio });
-//       navigate('/');
-//     };
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-cover bg-no-repeat flex items-center justify-center">
-//       <div className="w-5/6 max-w-2xl backdrop-blur-2xl text-gray-300 border-2 border-gray-600 flex items-center justify-between max-sm:flex-col-reverse rounded-lg">
-        
-//         {/* Profile Form */}
-//         <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-10 flex-1">
-//           <h3 className="text-lg">Profile Details</h3>
-
-//           {/* Upload Image */}
-//           <label htmlFor="avatar" className="flex items-center gap-3 cursor-pointer">
-//             <input
-//               onChange={(e) => setSelectedImage(e.target.files[0])}
-//               type="file"
-//               id="avatar"
-//               accept=".png, .jpg, .jpeg"
-//               hidden
-//             />
-//             <img
-//               src={selectedImage ? URL.createObjectURL(selectedImage) : (authUser?.profilePic || assets.avatar_icon)}
-//               alt="Profile Preview"
-//               className={`w-12 h-12 rounded-full object-cover`}
-//             />
-//             Upload Profile Image
-//           </label>
-
-//           {/* Name Field */}
-//           <input
-//             onChange={(e) => setName(e.target.value)}
-//             value={name}
-//             type="text"
-//             required
-//             placeholder="Your Name"
-//             className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-//           />
-
-//           {/* Bio Field */}
-//           <textarea
-//             onChange={(e) => setBio(e.target.value)}
-//             value={bio}
-//             rows={4}
-//             placeholder="Write Profile Bio"
-//             className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-//           ></textarea>
-
-//           {/* Save Button */}
-//           <button
-//             type="submit"
-//             className="p-2 text-lg bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md cursor-pointer"
-//           >
-//             Save
-//           </button>
-//         </form>
-
-//         {/* Right Side Image Display */}
-//         <img
-//           src={
-//             selectedImage
-//               ? URL.createObjectURL(selectedImage)
-//               : authUser?.profilePic || assets.logo_icon
-//           }
-//           alt="Profile"
-//           className="max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 object-cover"
-//         />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ProfilePage;
-
-
+export default ProfilePage;

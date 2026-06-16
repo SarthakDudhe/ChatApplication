@@ -228,9 +228,9 @@ const ChatContainer = () => {
   }, [highlightMessageId, messages]);
 
   return selectedUser ?  (
-    <div className='h-full flex flex-col relative bg-[#0a0612]/30 backdrop-blur-md overflow-hidden'>
+    <div className='h-full flex flex-col relative bg-[#121212]/40 backdrop-blur-md overflow-hidden'>
       {/* HEADER */}
-      <div className='flex items-center justify-between p-4 px-6 border-b border-white/5 bg-[#16112c]/35 backdrop-blur-md shadow-sm flex-shrink-0'>
+      <div className='flex items-center justify-between p-4 px-6 border-b border-white/5 bg-[#1c1c1e]/75 backdrop-blur-md shadow-sm flex-shrink-0'>
         <div className='flex items-center gap-3.5'>
           <div className='relative'>
             <img src={selectedUser.isGroup ? selectedUser.groupAvatar || assets.avatar_icon : selectedUser.profilePic || assets.avatar_icon} className='w-10 h-10 rounded-full object-cover border border-white/10' />
@@ -352,7 +352,7 @@ const ChatContainer = () => {
                        {selectedUser.isGroup && !isSentByMe && (
                          <span className='text-[10px] text-violet-400 font-semibold mb-1 ml-1 block'>{getSenderName(msg.senderId)}</span>
                        )}
-                       <p className={`p-3 px-4 max-w-[250px] md:max-w-[340px] text-sm leading-relaxed rounded-2xl shadow-md break-words border transition-all ${isSentByMe ? 'bg-gradient-to-tr from-violet-600 to-indigo-600 border-violet-500/20 text-white rounded-br-none font-medium' : 'bg-white/5 border-white/8 text-gray-100 rounded-bl-none'}`}>
+                       <p className={`p-3 px-4 max-w-[250px] md:max-w-[340px] text-sm leading-relaxed rounded-2xl shadow-md break-words border transition-all ${isSentByMe ? 'bg-[#1c1c1e] border-cyan-500/25 text-white rounded-br-none font-medium' : 'bg-white/3 border-white/5 text-gray-100 rounded-bl-none'}`}>
                          {msg.text}
                          {msg.editedAt && <span className='text-gray-400/70 text-[9px] font-normal italic ml-1.5'>(edited)</span>}
                        </p>
@@ -399,7 +399,7 @@ const ChatContainer = () => {
       </div>
 
       {/* BOTTOM AREA */}
-      <div className='p-4 bg-[#0a0612]/35 border-t border-white/5 backdrop-blur-md flex-shrink-0'>
+      <div className='p-4 bg-[#1c1c1e]/60 border-t border-white/5 backdrop-blur-md flex-shrink-0'>
         {/* Reply Preview */}
         {replyingTo && (
           <div className='flex items-center justify-between bg-violet-500/15 border-l-2 border-violet-500 rounded-xl px-4 py-2 mb-3 text-sm text-gray-300 backdrop-blur-md max-w-6xl mx-auto'>

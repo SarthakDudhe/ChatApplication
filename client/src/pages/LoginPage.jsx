@@ -8,41 +8,38 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setpassword] = useState("");
 
-  const [bio, setBio] = useState(""); // ✅ initialized as empty string
+  const [bio, setBio] = useState("");
   const [isDataSubmitted, setDataSubmitted] = useState(false);
 
-
-const {login} =useContext(AuthContext)
-
-
+  const {login} =useContext(AuthContext)
 
   const handleSubmit = (event) => {
     event.preventDefault();
     if (currState === "Sign Up" && !isDataSubmitted) {
-    setDataSubmitted(true);
+      setDataSubmitted(true);
       return;
     }
-  
-    // Final form submission logic goes here (e.g. API call)
-    console.log({ fullname, email, password, bio });
     login(currState === "Sign Up" ? 'signup':'login',{ fullname, email, password, bio })
   };
 
   return (
-    <div className='min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl'>
-      {/* Left */}
-      <img src={assets.logo_big} alt="" className='w-[min(30vw,250px)]' />
+    <div className='min-h-screen bg-[#121212] flex items-center justify-center gap-12 sm:gap-24 max-md:flex-col p-6 select-none'>
+      {/* Left Column - Big Logo */}
+      <div className='flex flex-col items-center gap-2 max-md:text-center'>
+        <img src={assets.logo_big} alt="QuickChat" className='w-[min(35vw,220px)] filter drop-shadow-[0_4px_24px_rgba(0,240,255,0.15)] animate-pulse-glow rounded-3xl' />
+        <p className='text-xs text-neutral-500 font-semibold tracking-widest uppercase mt-4'>End-to-End Encrypted Chat</p>
+      </div>
 
-      {/* Right */}
-      <form onSubmit={handleSubmit} className='border-2 bg-white/8 text-white border-gray-500 p-6 flex flex-col gap-6 rounded-lg shadow-lg'>
-        <h2 className='font-medium text-2xl flex justify-between items-center'>
+      {/* Right Column - Premium Auth Card */}
+      <form onSubmit={handleSubmit} className='glass-panel text-white p-8 flex flex-col gap-6 rounded-2xl shadow-2xl border border-white/10 w-full max-w-md animate-fade-in'>
+        <h2 className='font-bold text-2xl flex justify-between items-center bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent'>
           {currState}
           {isDataSubmitted && (
             <img
               onClick={() => setDataSubmitted(false)}
               src={assets.arrow_icon}
-              alt=""
-              className='w-5 cursor-pointer'
+              alt="Back"
+              className='w-5 cursor-pointer opacity-75 hover:opacity-100 transition-opacity'
             />
           )}
         </h2>
@@ -53,7 +50,7 @@ const {login} =useContext(AuthContext)
             type="text"
             onChange={(e) => setfullname(e.target.value)}
             value={fullname}
-            className='p-2 border border-gray-500 rounded-md focus:outline-none'
+            className='p-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-cyan/50 focus:ring-1 focus:ring-accent-cyan/50 text-white placeholder-neutral-500 transition-all text-sm'
             placeholder='Full Name'
             required
           />
@@ -68,7 +65,7 @@ const {login} =useContext(AuthContext)
               type="email"
               placeholder='Email Address'
               required
-              className='p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500'
+              className='p-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-cyan/50 focus:ring-1 focus:ring-accent-cyan/50 text-white placeholder-neutral-500 transition-all text-sm'
             />
             <input
               onChange={(e) => setpassword(e.target.value)}
@@ -76,7 +73,7 @@ const {login} =useContext(AuthContext)
               type="password"
               placeholder='Password'
               required
-              className='p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500'
+              className='p-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-cyan/50 focus:ring-1 focus:ring-accent-cyan/50 text-white placeholder-neutral-500 transition-all text-sm'
             />
           </>
         )}
@@ -87,48 +84,48 @@ const {login} =useContext(AuthContext)
             onChange={(e) => setBio(e.target.value)}
             value={bio}
             rows={4}
-            className='p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500'
-            placeholder='Provide a Short Bio..'
+            className='p-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-cyan/50 focus:ring-1 focus:ring-accent-cyan/50 text-white placeholder-neutral-500 transition-all text-sm resize-none'
+            placeholder='Tell others a bit about yourself...'
             required
           ></textarea>
         )}
 
         <button
           type='submit'
-          className='py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md cursor-pointer'
+          className='py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-semibold rounded-xl cursor-pointer hover:shadow-lg hover:shadow-violet-500/10 active:scale-[0.99] transition-all text-sm'
         >
-          {currState === "Sign Up" ? "Create Account" : "Login Now"}
+          {currState === "Sign Up" ? (isDataSubmitted ? "Complete Signup" : "Next Details") : "Log In"}
         </button>
 
-        <div className='flex items-center gap-2 text-sm text-gray-500'>
-          <input type="checkbox" required />
-          <p>Agree to the terms of use & privacy policy.</p>
+        <div className='flex items-center gap-2.5 text-xs text-neutral-400'>
+          <input type="checkbox" required className='rounded text-violet-500 focus:ring-violet-500 bg-white/5 border-white/10 w-4 h-4' />
+          <p>I agree to the Terms of Service & Privacy Policy.</p>
         </div>
 
         {/* Toggle Login/Sign Up */}
-        <div className='flex flex-col gap-2'>
+        <div className='flex flex-col gap-2 border-t border-white/5 pt-4'>
           {currState === "Sign Up" ? (
-            <p className='text-sm text-gray-600'>
+            <p className='text-xs text-neutral-400'>
               Already have an Account?{' '}
               <span
                 onClick={() => {
                   setCurrState("Login");
-                  setDataSubmitted(false); // ✅ Fixed
+                  setDataSubmitted(false);
                 }}
-                className='font-medium text-violet-500 cursor-pointer'
+                className='font-bold text-violet-400 cursor-pointer hover:underline'
               >
                 Login here
               </span>
             </p>
           ) : (
-            <p className='text-sm text-gray-600'>
-              Create an Account{' '}
+            <p className='text-xs text-neutral-400'>
+              Create a new Account?{' '}
               <span
                 onClick={() => {
                   setCurrState("Sign Up");
-                  setDataSubmitted(false); // ✅ Fixed
+                  setDataSubmitted(false);
                 }}
-                className='font-medium text-violet-500 cursor-pointer'
+                className='font-bold text-violet-400 cursor-pointer hover:underline'
               >
                 Click here
               </span>
@@ -141,5 +138,3 @@ const {login} =useContext(AuthContext)
 };
 
 export default LoginPage;
-
-
