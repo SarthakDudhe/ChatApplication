@@ -16,6 +16,9 @@ const [token,setToken]=useState(localStorage.getItem("token"));
 const [authUser,setAuthUser]=useState(null);
 const [onlineUser,setonlineUser]=useState([]);
 const [socket,setSocket]=useState(null);
+const [notificationPermission, setNotificationPermission] = useState(
+  typeof window !== "undefined" && "Notification" in window ? Notification.permission : "default"
+);
 
 //Check if user is authenticated and if so,set the user data and connect the socket
 
@@ -105,6 +108,16 @@ const connectSocket = (userData)=>{
 
 
 
+useEffect(() => {
+  if (authUser && typeof window !== "undefined" && "Notification" in window) {
+    if (Notification.permission === "default") {
+      Notification.requestPermission().then((permission) => {
+        setNotificationPermission(permission);
+      });
+    }
+  }
+}, [authUser]);
+
 useEffect(()=>{
 if (token) {
     axios.defaults.headers.common["token"] = token;
@@ -113,7 +126,7 @@ checkAuth()
 },[])
 
     const value={
-axios,authUser,onlineUser,socket,login,logout,updateProfile
+axios,authUser,onlineUser,socket,login,logout,updateProfile,notificationPermission
     }
 
 return(

@@ -22,6 +22,49 @@ export const ChatProvider = ({children})=>{
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [highlightMessageId, setHighlightMessageId] = useState(null);
+  const [notificationSettings, setNotificationSettings] = useState(() => {
+    try {
+      const stored = localStorage.getItem("chat_notification_settings");
+      return stored ? JSON.parse(stored) : { sound: true, desktop: true };
+    } catch {
+      return { sound: true, desktop: true };
+    }
+  });
+
+  // Save settings to localStorage on change
+  useEffect(() => {
+    localStorage.setItem("chat_notification_settings", JSON.stringify(notificationSettings));
+  }, [notificationSettings]);
+
+  const playNotificationSound = () => {
+    if (!notificationSettings.sound) return;
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      const playTone = (frequency, startTime, duration) => {
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(frequency, startTime);
+        
+        gainNode.gain.setValueAtTime(0.15, startTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        oscillator.start(startTime);
+        oscillator.stop(startTime + duration);
+      };
+
+      const now = audioCtx.currentTime;
+      playTone(523.25, now, 0.15); // C5
+      playTone(659.25, now + 0.08, 0.25); // E5
+    } catch (error) {
+      console.error("Failed to play notification sound", error);
+    }
+  };
   
   const {socket,axios}=useContext(AuthContext);
 
@@ -169,15 +212,46 @@ const subscribeToMessages =async ()=>{
     if(!socket) return;
 
     socket.on("newMessage",(newMessage)=>{
-        if (selectedUser && newMessage.senderId === selectedUser._id) {
+        const isChatActive = selectedUser && newMessage.senderId === selectedUser._id;
+        
+        if (isChatActive) {
             newMessage.seen = true;
             setMessages((prevMessages)=>[...prevMessages,newMessage]);
-           axios.put(`/api/messages/mark/${newMessage._id}`)
-        }else{
+            axios.put(`/api/messages/mark/${newMessage._id}`)
+        } else {
             setUnseenMessages((prevUnseenMessages)=>({
                 ...prevUnseenMessages,[newMessage.senderId] : 
                 prevUnseenMessages[newMessage.senderId] ? prevUnseenMessages[newMessage.senderId] + 1 : 1
             }))
+        }
+
+        // Trigger desktop notifications and play chime sound
+        if (!isChatActive || document.hidden) {
+            playNotificationSound();
+
+            if (
+                notificationSettings.desktop && 
+                typeof window !== "undefined" && 
+                "Notification" in window && 
+                Notification.permission === "granted"
+            ) {
+                const sender = users.find(u => u._id === newMessage.senderId);
+                const senderName = sender ? sender.fullname : "New Message";
+                const senderPic = sender ? sender.profilePic : "";
+
+                const notification = new Notification(senderName, {
+                    body: newMessage.text || "📷 Sent an image",
+                    icon: senderPic || undefined,
+                });
+
+                notification.onclick = () => {
+                    window.focus();
+                    if (sender) {
+                        setSelectedUser(sender);
+                        setUnseenMessages(prev => ({ ...prev, [sender._id]: 0 }));
+                    }
+                };
+            }
         }
     })
 
@@ -236,7 +310,7 @@ return ()=>unsubscribeFromMessages();
 
   
   const value ={
-messages,users,selectedUser,getUsers,setMessages,sendMessage,getMessages,setSelectedUser,unseenMessages,setUnseenMessages,typingUsers,emitTyping,emitStopTyping,deleteMessage,editMessage,reactToMessage,replyingTo,setReplyingTo,searchResults,isSearching,searchQuery,setSearchQuery,searchMessages,setSearchResults,highlightMessageId,setHighlightMessageId
+messages,users,selectedUser,getUsers,setMessages,sendMessage,getMessages,setSelectedUser,unseenMessages,setUnseenMessages,typingUsers,emitTyping,emitStopTyping,deleteMessage,editMessage,reactToMessage,replyingTo,setReplyingTo,searchResults,isSearching,searchQuery,setSearchQuery,searchMessages,setSearchResults,highlightMessageId,setHighlightMessageId,notificationSettings,setNotificationSettings
   }
 
   return (<ChatContext.Provider value={value}>

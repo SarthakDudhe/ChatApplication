@@ -18,7 +18,9 @@ const Sidebar = () => {
     isSearching,
     searchQuery,
     searchMessages,
-    setHighlightMessageId
+    setHighlightMessageId,
+    notificationSettings,
+    setNotificationSettings
   } = useContext(ChatContext)
 
   const {logout,onlineUser,authUser}=useContext(AuthContext)
@@ -86,10 +88,31 @@ const Sidebar = () => {
                 <img src={assets.logo} alt="logo" className='max-w-40' />
                 <div className='relative py-2 group'>
                     <img src={assets.menu_icon} alt="menu-icon" className='max-h-5 cursor-pointer' />
-                    <div className='absolute top-full right-0 z-20 w-32 p-5 rounded-md bg-[#282142] border border-gray-600 text-gray-100 hidden group-hover:block'>
-                      <p onClick={()=>navigate('/profile')} className='cursor-pointer text-sm'>Edit Profile</p>
-                      <hr className='my-2 border-t border-gray-500'/>
-                      <p className='cursor-pointer text-sm' onClick={()=>logout()}>Logout</p>
+                    <div className='absolute top-full right-0 z-20 w-48 p-4 rounded-lg bg-[#282142] border border-gray-600 text-gray-100 hidden group-hover:block shadow-xl'>
+                      <p onClick={()=>navigate('/profile')} className='cursor-pointer text-sm hover:text-violet-400 transition-colors'>Edit Profile</p>
+                      <hr className='my-2 border-t border-gray-700/50'/>
+                      <div className='flex flex-col gap-2.5 my-2.5 text-xs text-gray-300'>
+                        <div className='flex justify-between items-center'>
+                          <span>Chime Sound</span>
+                          <input 
+                            type='checkbox' 
+                            checked={notificationSettings?.sound ?? true}
+                            onChange={(e) => setNotificationSettings(prev => ({...prev, sound: e.target.checked}))}
+                            className='w-3.5 h-3.5 accent-violet-500 cursor-pointer'
+                          />
+                        </div>
+                        <div className='flex justify-between items-center'>
+                          <span>Desktop Alerts</span>
+                          <input 
+                            type='checkbox' 
+                            checked={notificationSettings?.desktop ?? true}
+                            onChange={(e) => setNotificationSettings(prev => ({...prev, desktop: e.target.checked}))}
+                            className='w-3.5 h-3.5 accent-violet-500 cursor-pointer'
+                          />
+                        </div>
+                      </div>
+                      <hr className='my-2 border-t border-gray-700/50'/>
+                      <p className='cursor-pointer text-sm text-red-400 hover:text-red-300 transition-colors font-medium' onClick={()=>logout()}>Logout</p>
                     </div>
                 </div>
             </div>
