@@ -8,6 +8,9 @@ import messageRouter from "./routes/messageRoutes.js";
 import { Server } from "socket.io";
 import User from "./models/User.js";
 
+//Allowed origins for CORS (set CLIENT_URL in .env for production)
+const allowedOrigins = process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",") : ["*"];
+
 //Create Express app and Http server
 
 
@@ -16,7 +19,7 @@ const server =http.createServer(app);
 
 //Initalize socket.io server
 export const io = new Server(server,{
-    cors:{origin:"*"}
+    cors:{origin:allowedOrigins}
 })
 
 //Store online users
@@ -59,7 +62,7 @@ socket.on("disconnect", async ()=>{
 //Middleware setup
 
 app.use(express.json({limit :'15mb'}))
-app.use(cors())
+app.use(cors({origin:allowedOrigins}))
 
 
 //Routes setup
