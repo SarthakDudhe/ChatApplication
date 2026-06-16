@@ -86,6 +86,7 @@ app.use(cors({origin:allowedOrigins}))
 
 
 //Routes setup
+app.get("/", (req, res) => res.send("QuickChat Backend API is running successfully."));
 app.use("/api/status",(re,res)=>res.send("Server is Live"));
 app.use("/api/auth", userRouter)
 app.use("/api/messages",messageRouter)
@@ -96,10 +97,8 @@ app.use("/api/conversations",conversationRouter)
 
 await connectDB();
 
-if (process.env.NODE_ENV !=="production") {
-  const PORT=process.env.PORT || 5000;
-server.listen(PORT,()=>console.log("Server is running on PORT : ",PORT));  
-}
+const PORT=process.env.PORT || 5000;
+server.listen(PORT,()=>console.log("Server is running on PORT : ",PORT));
 
 //Export server for vercel
 export default server;
