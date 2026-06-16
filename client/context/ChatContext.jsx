@@ -110,6 +110,23 @@ const editMessage = async (messageId, newText) => {
 }
 
 
+//Function to react to a message
+
+const reactToMessage = async (messageId, emoji) => {
+    try {
+        const {data} = await axios.put(`/api/messages/react/${messageId}`, {emoji});
+        if (data.success) {
+            setMessages(prev => prev.map(msg =>
+                msg._id === messageId ? {...msg, reactions: data.reactions} : msg
+            ))
+        } else {
+            toast.error(data.message)
+        }
+    } catch (error) {
+        toast.error(error.message)
+    }
+}
+
 //Functions to emit typing events
 
 const emitTyping = (receiverId) => {
@@ -161,6 +178,12 @@ const subscribeToMessages =async ()=>{
             msg._id===messageId ? {...msg,text,editedAt} : msg
         ))
     })
+
+    socket.on("messageReaction",({messageId,reactions})=>{
+        setMessages(prev=>prev.map(msg=>
+            msg._id===messageId ? {...msg,reactions} : msg
+        ))
+    })
 }
 
 //function to unsubscribe from messages
@@ -172,6 +195,7 @@ const unsubscribeFromMessages = ()=>{
         socket.off("userStopTyping");
         socket.off("messageDeleted");
         socket.off("messageEdited");
+        socket.off("messageReaction");
     }
 }
 
@@ -186,7 +210,7 @@ return ()=>unsubscribeFromMessages();
 
   
   const value ={
-messages,users,selectedUser,getUsers,setMessages,sendMessage,getMessages,setSelectedUser,unseenMessages,setUnseenMessages,typingUsers,emitTyping,emitStopTyping,deleteMessage,editMessage,replyingTo,setReplyingTo
+messages,users,selectedUser,getUsers,setMessages,sendMessage,getMessages,setSelectedUser,unseenMessages,setUnseenMessages,typingUsers,emitTyping,emitStopTyping,deleteMessage,editMessage,reactToMessage,replyingTo,setReplyingTo
   }
 
   return (<ChatContext.Provider value={value}>

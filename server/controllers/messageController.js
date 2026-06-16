@@ -205,3 +205,61 @@ export const editMessage =async (req,res) => {
         res.json({success:false,message:error.message})
     }
 }
+
+
+//React to a message (toggle emoji reaction)
+
+export const reactToMessage =async (req,res) => {
+    try {
+        const {id} =req.params;
+        const {emoji} =req.body;
+        const userId=req.user._id;
+
+        if (!emoji) {
+            return res.json({success:false,message:"Emoji is required"})
+        }
+
+        const message = await Message.findById(id);
+        if (!message) {
+            return res.json({success:false,message:"Message not found"})
+        }
+
+        if (message.deleted) {
+            return res.json({success:false,message:"Cannot react to a deleted message"})
+        }
+
+        //Check if user already reacted with this emoji
+        const existingReactionIndex = message.reactions.findIndex(
+            r => r.userId.toString() === userId.toString() && r.emoji === emoji
+        );
+
+        if (existingReactionIndex > -1) {
+            //Remove reaction (toggle off)
+            message.reactions.splice(existingReactionIndex, 1);
+        } else {
+            //Remove any previous reaction by this user, then add new one
+            message.reactions = message.reactions.filter(
+                r => r.userId.toString() !== userId.toString()
+            );
+            message.reactions.push({userId, emoji});
+        }
+
+        await message.save();
+
+        //Emit to both sender and receiver for real-time sync
+        const otherUserId = message.senderId.toString() === userId.toString()
+            ? message.receiverId.toString()
+            : message.senderId.toString();
+
+        const otherSocketId = userSocketMap[otherUserId];
+        if (otherSocketId) {
+            io.to(otherSocketId).emit("messageReaction",{messageId:id,reactions:message.reactions})
+        }
+
+        res.json({success:true,reactions:message.reactions})
+
+    } catch (error) {
+        console.log(error.message)
+        res.json({success:false,message:error.message})
+    }
+}
