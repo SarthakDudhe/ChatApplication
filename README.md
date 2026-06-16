@@ -613,40 +613,39 @@ QuickChat/
 ├── 📄 .gitignore                         # Git ignore rules
 │
 ├── 📁 client/                            # Frontend Application
-│   └── 📁 my-react-app/
-│       ├── 📄 index.html                 # SPA entry point
-│       ├── 📄 vite.config.js             # Vite + React + Tailwind v4 config
-│       ├── 📄 vercel.json                # Client-side Vercel SPA rewrites
-│       ├── 📄 package.json               # Frontend dependencies
-│       ├── 📄 eslint.config.js           # ESLint configuration
-│       ├── 📄 .env                       # VITE_BACKEND_URL
-│       │
-│       ├── 📁 context/                   # React Context Providers
-│       │   ├── 📄 AuthContext.jsx        # Auth state, socket, login/logout/profile
-│       │   └── 📄 ChatContext.jsx        # Messages, users, typing, CRUD, replies
-│       │
-│       ├── 📁 src/
-│       │   ├── 📄 main.jsx               # App bootstrap (BrowserRouter + Providers)
-│       │   ├── 📄 App.jsx                # Route definitions + auth guards
-│       │   ├── 📄 index.css              # Global styles (Outfit font, Tailwind import)
-│       │   │
-│       │   ├── 📁 pages/
-│       │   │   ├── 📄 HomePage.jsx       # 3-panel layout (Sidebar + Chat + RightSidebar)
-│       │   │   ├── 📄 LoginPage.jsx      # Multi-step login/signup form
-│       │   │   └── 📄 ProfilePage.jsx    # Profile editing with image upload
-│       │   │
-│       │   ├── 📁 components/
-│       │   │   ├── 📄 Sidebar.jsx        # User list, search, online status, unseen badges
-│       │   │   ├── 📄 ChatContainer.jsx  # Message display, input, emoji, reply, edit/delete
-│       │   │   └── 📄 RightSidebar.jsx   # Contact info, bio, media gallery
-│       │   │
-│       │   ├── 📁 lib/
-│       │   │   └── 📄 utils.js           # formatMessageTime, formatLastSeen, formatDateHeader
-│       │   │
-│       │   └── 📁 assets/                # Static assets (icons, images, SVGs)
-│       │       └── 📄 assets.js          # Asset imports + dummy data exports
-│       │
-│       └── 📁 public/                    # Vite public directory
+│   ├── 📄 index.html                     # SPA entry point
+│   ├── 📄 vite.config.js                 # Vite + React + Tailwind v4 config
+│   ├── 📄 vercel.json                    # Client-side Vercel SPA rewrites
+│   ├── 📄 package.json                   # Frontend dependencies
+│   ├── 📄 eslint.config.js               # ESLint configuration
+│   ├── 📄 .env                           # VITE_BACKEND_URL
+│   │
+│   ├── 📁 context/                       # React Context Providers
+│   │   ├── 📄 AuthContext.jsx            # Auth state, socket, login/logout/profile
+│   │   └── 📄 ChatContext.jsx            # Messages, users, typing, CRUD, replies
+│   │
+│   ├── 📁 src/
+│   │   ├── 📄 main.jsx                   # App bootstrap (BrowserRouter + Providers)
+│   │   ├── 📄 App.jsx                    # Route definitions + auth guards
+│   │   ├── 📄 index.css                  # Global styles (Outfit font, Tailwind import)
+│   │   │
+│   │   ├── 📁 pages/
+│   │   │   ├── 📄 HomePage.jsx           # 3-panel layout (Sidebar + Chat + RightSidebar)
+│   │   │   ├── 📄 LoginPage.jsx          # Multi-step login/signup form
+│   │   │   └── 📄 ProfilePage.jsx        # Profile editing with image upload
+│   │   │
+│   │   ├── 📁 components/
+│   │   │   ├── 📄 Sidebar.jsx            # User list, search, online status, unseen badges
+│   │   │   ├── 📄 ChatContainer.jsx      # Message display, input, emoji, reply, edit/delete
+│   │   │   └── 📄 RightSidebar.jsx       # Contact info, bio, media gallery
+│   │   │
+│   │   ├── 📁 lib/
+│   │   │   └── 📄 utils.js               # formatMessageTime, formatLastSeen, formatDateHeader
+│   │   │
+│   │   └── 📁 assets/                    # Static assets (icons, images, SVGs)
+│   │       └── 📄 assets.js              # Asset imports + dummy data exports
+│   │
+│   └── 📁 public/                        # Vite public directory
 │
 └── 📁 server/                            # Backend Application
     ├── 📄 server.js                      # Express + HTTP + Socket.io setup, entry point
@@ -720,6 +719,9 @@ JWT_SECRET=your_super_secret_jwt_key_min_32_chars
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
+
+# CORS - Allowed frontend origins (comma-separated for multiple)
+CLIENT_URL=http://localhost:5173
 ```
 
 Start the development server:
@@ -733,11 +735,11 @@ npm run server    # Uses nodemon for auto-restart
 Open a **new terminal**:
 
 ```bash
-cd client/my-react-app
+cd client
 npm install
 ```
 
-Create a `.env` file in `client/my-react-app/`:
+Create a `.env` file in `client/`:
 
 ```env
 VITE_BACKEND_URL=http://localhost:5000
