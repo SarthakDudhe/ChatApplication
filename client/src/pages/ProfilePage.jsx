@@ -93,14 +93,19 @@ const ProfilePage = () => {
           </div>
         </form>
 
-        <div className='flex flex-col items-center gap-4 flex-shrink-0'>
-          <img 
-            src={selectedimage ? URL.createObjectURL(selectedimage) : authUser?.profilePic || assets.avatar_icon} 
-            alt="Profile Avatar" 
-            className='w-40 h-40 rounded-full border-2 border-white/10 shadow-2xl object-cover max-sm:mt-4' 
-          />
+        <label htmlFor="avatar" className='relative group cursor-pointer flex flex-col items-center gap-4 flex-shrink-0'>
+          <div className='relative overflow-hidden rounded-full border-2 border-white/10 shadow-2xl w-40 h-40'>
+            <img 
+              src={selectedimage ? URL.createObjectURL(selectedimage) : authUser?.profilePic || assets.avatar_icon} 
+              alt="Profile Avatar" 
+              className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-105' 
+            />
+            <div className='absolute inset-0 bg-black/55 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200'>
+              <span className='text-xs font-semibold text-[#FAF9F6] bg-[#242424]/80 px-3 py-1.5 rounded-full border border-white/10'>Edit Photo 📸</span>
+            </div>
+          </div>
           <span className='text-[10px] text-[#8E8E93] font-semibold uppercase tracking-widest'>Current Photo</span>
-        </div>
+        </label>
       </div>
     </div>
   )

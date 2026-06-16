@@ -76,6 +76,8 @@ const updateProfile =async (body)=>{
         if (data.success) {
             setAuthUser(data.user);
             toast.success("Profile Updated Successfully")
+        } else {
+            toast.error(data.message || "Failed to update profile");
         }
     } catch (error) {
         toast.error(error.message)
