@@ -26,7 +26,12 @@ const LoginPage = () => {
     <div className='min-h-screen bg-[#1A1A1A] flex items-center justify-center gap-12 sm:gap-24 max-md:flex-col p-6 select-none'>
       {/* Left Column - Big Logo */}
       <div className='flex flex-col items-center gap-2 max-md:text-center'>
-        <img src={assets.logo_big} alt="QuickChat" className='w-[min(35vw,220px)] filter drop-shadow-[0_4px_24px_rgba(212,175,55,0.15)] animate-pulse-glow rounded-3xl' />
+        <img 
+          src={assets.logo_big} 
+          alt="QuickChat" 
+          style={{ filter: 'invert(1) hue-rotate(180deg) brightness(1.6) contrast(1.2)' }}
+          className='w-[min(35vw,220px)] drop-shadow-[0_4px_24px_rgba(212,175,55,0.15)] animate-pulse-glow rounded-3xl' 
+        />
         <p className='text-xs text-[#8E8E93] font-semibold tracking-widest uppercase mt-4'>End-to-End Encrypted Chat</p>
       </div>
 
