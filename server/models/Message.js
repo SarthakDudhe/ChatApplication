@@ -16,6 +16,7 @@ reactions:[{
 }],
 },{timestamps:true});
 
+messageSchema.index({ text: "text" });
 
 const Message=mongoose.model("Message",messageSchema);
 

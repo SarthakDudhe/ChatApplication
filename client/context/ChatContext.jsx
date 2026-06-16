@@ -18,6 +18,10 @@ export const ChatProvider = ({children})=>{
   const [unseenMessages,setUnseenMessages]=useState({})
   const [typingUsers,setTypingUsers]=useState({})
   const [replyingTo,setReplyingTo]=useState(null)
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [highlightMessageId, setHighlightMessageId] = useState(null);
   
   const {socket,axios}=useContext(AuthContext);
 
@@ -33,6 +37,28 @@ const getUsers = async () => {
         }
     } catch (error) {
         toast.error(error.message)
+    }
+}
+
+//function to search messages
+const searchMessages = async (query) => {
+    setSearchQuery(query);
+    if (!query || query.trim() === "") {
+        setSearchResults([]);
+        return;
+    }
+    setIsSearching(true);
+    try {
+        const { data } = await axios.get("/api/messages/search", { params: { q: query } });
+        if (data.success) {
+            setSearchResults(data.messages);
+        } else {
+            toast.error(data.message);
+        }
+    } catch (error) {
+        toast.error(error.message);
+    } finally {
+        setIsSearching(false);
     }
 }
 
@@ -210,7 +236,7 @@ return ()=>unsubscribeFromMessages();
 
   
   const value ={
-messages,users,selectedUser,getUsers,setMessages,sendMessage,getMessages,setSelectedUser,unseenMessages,setUnseenMessages,typingUsers,emitTyping,emitStopTyping,deleteMessage,editMessage,reactToMessage,replyingTo,setReplyingTo
+messages,users,selectedUser,getUsers,setMessages,sendMessage,getMessages,setSelectedUser,unseenMessages,setUnseenMessages,typingUsers,emitTyping,emitStopTyping,deleteMessage,editMessage,reactToMessage,replyingTo,setReplyingTo,searchResults,isSearching,searchQuery,setSearchQuery,searchMessages,setSearchResults,highlightMessageId,setHighlightMessageId
   }
 
   return (<ChatContext.Provider value={value}>

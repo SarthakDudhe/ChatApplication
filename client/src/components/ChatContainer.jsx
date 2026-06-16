@@ -7,7 +7,7 @@ import toast from 'react-hot-toast'
 import EmojiPicker from 'emoji-picker-react'
 const ChatContainer = () => {
 
-const {messages,selectedUser,setSelectedUser,sendMessage,getMessages,typingUsers,emitTyping,emitStopTyping,deleteMessage,editMessage,reactToMessage,replyingTo,setReplyingTo} =useContext(ChatContext);
+const {messages,selectedUser,setSelectedUser,sendMessage,getMessages,typingUsers,emitTyping,emitStopTyping,deleteMessage,editMessage,reactToMessage,replyingTo,setReplyingTo,highlightMessageId,setHighlightMessageId} =useContext(ChatContext);
 const {authUser,onlineUser} =useContext(AuthContext);
 
 const[input,setInput]=useState('')
@@ -113,10 +113,32 @@ useEffect(()=>{
 
 const scrollEnd =useRef()
 useEffect(()=>{
-if (scrollEnd.current && messages) {
-  scrollEnd.current.scrollIntoView({behavior : "smooth"})
-}
-},[messages])
+  if (scrollEnd.current && messages && !highlightMessageId) {
+    scrollEnd.current.scrollIntoView({behavior : "smooth"})
+  }
+},[messages, highlightMessageId])
+
+// Handle scrolling to and highlighting a searched message
+useEffect(() => {
+  if (highlightMessageId && messages.length > 0) {
+    const timer = setTimeout(() => {
+      const element = document.getElementById(`msg-${highlightMessageId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 200);
+
+    const clearTimer = setTimeout(() => {
+      setHighlightMessageId(null);
+    }, 2500);
+
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(clearTimer);
+    };
+  }
+}, [highlightMessageId, messages]);
+
 
 
 
@@ -147,7 +169,7 @@ if (scrollEnd.current && messages) {
                   </span>
                 </div>
               )}
-              <div className={`flex items-end gap-2 justify-end group ${msg.senderId !==authUser._id ? 'flex-row-reverse' : ''}`}>
+              <div id={`msg-${msg._id}`} className={`flex items-end gap-2 justify-end group p-2 rounded-lg transition-all duration-500 ${msg.senderId !==authUser._id ? 'flex-row-reverse' : ''} ${highlightMessageId === msg._id ? 'bg-violet-500/25 ring-2 ring-violet-400 border border-violet-400/50 shadow-lg shadow-violet-500/10 scale-[1.01]' : ''}`}>
                    {msg.deleted ? (
                     <p className={`p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all bg-gray-500/20 text-gray-400 italic ${msg.senderId ===authUser._id ? 'rounded-br-none' : 'rounded-bl-none'}`}>🚫 This message was deleted</p>
                    ): editingMsg===msg._id ? (

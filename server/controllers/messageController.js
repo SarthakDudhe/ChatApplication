@@ -263,3 +263,41 @@ export const reactToMessage =async (req,res) => {
         res.json({success:false,message:error.message})
     }
 }
+
+// Search messages (full-text search with regex for partial matching)
+export const searchMessages = async (req, res) => {
+    try {
+        const { q } = req.query;
+        const userId = req.user._id;
+
+        if (!q || q.trim() === "") {
+            return res.json({ success: true, messages: [] });
+        }
+
+        const messages = await Message.find({
+            $and: [
+                {
+                    $or: [
+                        { senderId: userId },
+                        { receiverId: userId }
+                    ]
+                },
+                {
+                    text: { $regex: q, $options: "i" }
+                },
+                {
+                    deleted: false
+                }
+            ]
+        })
+        .sort({ createdAt: -1 })
+        .populate("senderId", "fullname profilePic")
+        .populate("receiverId", "fullname profilePic");
+
+        res.json({ success: true, messages });
+    } catch (error) {
+        console.log(error.message)
+        res.json({ success: false, message: error.message });
+    }
+}
+
