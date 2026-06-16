@@ -7,7 +7,7 @@ import toast from 'react-hot-toast'
 import EmojiPicker from 'emoji-picker-react'
 const ChatContainer = () => {
 
-const {messages,selectedUser,setSelectedUser,sendMessage,getMessages,typingUsers,emitTyping,emitStopTyping,deleteMessage,editMessage,replyingTo,setReplyingTo} =useContext(ChatContext);
+const {messages,selectedUser,setSelectedUser,sendMessage,getMessages,typingUsers,emitTyping,emitStopTyping,deleteMessage,editMessage,reactToMessage,replyingTo,setReplyingTo} =useContext(ChatContext);
 const {authUser,onlineUser} =useContext(AuthContext);
 
 const[input,setInput]=useState('')
@@ -17,6 +17,7 @@ const[editingMsg,setEditingMsg]=useState(null)
 const[editText,setEditText]=useState('')
 const typingTimeoutRef=useRef(null)
 const emojiPickerRef=useRef(null)
+const reactionEmojis=['👍','❤️','😂','😮','🙏']
 
 //Handle delete message
 const handleDelete=(msgId)=>{
@@ -167,11 +168,21 @@ if (scrollEnd.current && messages) {
                       )}
                       <img src={msg.image} alt="" className='max-w-[230px] border border-gray-700 rounded-lg overflow-hidden mb-8' />
                       <div className='absolute top-1 right-1 hidden group-hover:flex gap-1'>
+                        {reactionEmojis.map(em=>(
+                          <button key={em} onClick={()=>reactToMessage(msg._id,em)} className='bg-gray-800/80 text-sm px-1 py-0.5 rounded cursor-pointer hover:scale-125 transition-transform' title={em}>{em}</button>
+                        ))}
                         <button onClick={()=>setReplyingTo(msg)} className='bg-gray-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-gray-600' title='Reply'>↩️</button>
                         {msg.senderId===authUser._id && (
                           <button onClick={()=>handleDelete(msg._id)} className='bg-red-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-red-600' title='Delete'>🗑️</button>
                         )}
                       </div>
+                      {msg.reactions && msg.reactions.length>0 && (
+                        <div className='flex gap-1 mt-1 flex-wrap'>
+                          {Object.entries(msg.reactions.reduce((acc,r)=>{acc[r.emoji]=(acc[r.emoji]||0)+1;return acc},{})).map(([emoji,count])=>(
+                            <button key={emoji} onClick={()=>reactToMessage(msg._id,emoji)} className={`text-xs px-1.5 py-0.5 rounded-full border cursor-pointer transition-colors ${msg.reactions.some(r=>r.userId===authUser._id && r.emoji===emoji) ? 'bg-violet-500/30 border-violet-400' : 'bg-white/5 border-gray-600 hover:border-gray-400'}`}>{emoji} {count>1 && <span className='text-gray-400 ml-0.5'>{count}</span>}</button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                    ):(
                     <div className='relative'>
@@ -183,6 +194,9 @@ if (scrollEnd.current && messages) {
                       )}
                       <p className={`p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all bg-violet-500/30 text-white ${msg.senderId ===authUser._id ? 'rounded-br-none' : 'rounded-bl-none'}`}>{msg.text}{msg.editedAt && <span className='text-gray-400 text-[10px] ml-1'>(edited)</span>}</p>
                       <div className='absolute top-1 right-1 hidden group-hover:flex gap-1'>
+                        {reactionEmojis.map(em=>(
+                          <button key={em} onClick={()=>reactToMessage(msg._id,em)} className='bg-gray-800/80 text-sm px-1 py-0.5 rounded cursor-pointer hover:scale-125 transition-transform' title={em}>{em}</button>
+                        ))}
                         <button onClick={()=>setReplyingTo(msg)} className='bg-gray-500/80 text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-gray-600' title='Reply'>↩️</button>
                         {msg.senderId===authUser._id && (
                           <>
@@ -191,6 +205,13 @@ if (scrollEnd.current && messages) {
                           </>
                         )}
                       </div>
+                      {msg.reactions && msg.reactions.length>0 && (
+                        <div className='flex gap-1 mt-1 flex-wrap'>
+                          {Object.entries(msg.reactions.reduce((acc,r)=>{acc[r.emoji]=(acc[r.emoji]||0)+1;return acc},{})).map(([emoji,count])=>(
+                            <button key={emoji} onClick={()=>reactToMessage(msg._id,emoji)} className={`text-xs px-1.5 py-0.5 rounded-full border cursor-pointer transition-colors ${msg.reactions.some(r=>r.userId===authUser._id && r.emoji===emoji) ? 'bg-violet-500/30 border-violet-400' : 'bg-white/5 border-gray-600 hover:border-gray-400'}`}>{emoji} {count>1 && <span className='text-gray-400 ml-0.5'>{count}</span>}</button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                    )}
                    <div className='text-center text-xs'>
