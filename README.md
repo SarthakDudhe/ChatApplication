@@ -101,7 +101,8 @@ For developers and contributors looking to expand the visual assets of this repo
 
   * *Description*: Demonstrates an admin creating a group, selecting contacts, updating group avatars with client-side compression, adding new members, and removing members.
 * **[PLACEHOLDER] Llama 4 AI Chatbot Streaming Capture**
-  * *Recommended Dimensions*: `400x700`
+  <img width="402" height="700" alt="Screenshot 2026-06-23 141238" src="https://github.com/user-attachments/assets/e0373f77-89f5-4670-82b3-64b440329a7a" />
+
   * *Description*: Mobile-view capture showing the Dialogue Bot slide-out panel, clicking starter chips, and Llama 4 streaming chunked text in real-time.
 
 ---
