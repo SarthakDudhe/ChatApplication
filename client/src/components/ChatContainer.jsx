@@ -699,13 +699,7 @@ const ChatContainer = () => {
     </div>
   ):(
     <div className='flex-1 flex flex-col items-center justify-center gap-4 text-[#6B7280] bg-[#F5F5F0] max-md:hidden'>
-      <div className='p-8 rounded-2xl bg-white border border-[#E8E8E2] shadow-sm flex flex-col items-center gap-4 text-center max-w-sm animate-fade-in'>
-        <img src={assets.logo_icon} className='max-w-12 filter opacity-90' alt="" />
-        <div>
-          <p className='text-md font-bold text-[#1A1A1A] font-headline tracking-wide'>Dialogue Enterprise</p>
-          <p className='text-xs text-[#6B7280] leading-relaxed mt-2'>Select a contact or group conversation from the sidebar to start messaging. All conversations are secured with client-side end-to-end encryption.</p>
-        </div>
-      </div>
+      <img src={assets.logo_icon} className='w-72 object-contain opacity-95 drop-shadow-lg' alt="Dialogue" />
     </div>
   )
 }
