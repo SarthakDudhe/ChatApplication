@@ -74,7 +74,7 @@ const Sidebar = () => {
   // Scroll chatbot to bottom
   useEffect(() => {
     if (chatbotScrollEndRef.current && isChatbotOpen) {
-      chatbotScrollEndRef.current.scrollIntoView({ behavior: "smooth" });
+      chatbotScrollEndRef.current.scrollIntoView({ behavior: isBotTyping ? "auto" : "smooth" });
     }
   }, [chatbotMessages, isBotTyping, isChatbotOpen]);
 
