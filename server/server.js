@@ -86,7 +86,7 @@ app.use(cors({origin:allowedOrigins}))
 
 
 //Routes setup
-app.get("/", (req, res) => res.send("QuickChat Backend API is running successfully."));
+app.get("/", (req, res) => res.send("Dialogue Backend API is running successfully."));
 app.use("/api/status",(re,res)=>res.send("Server is Live"));
 app.use("/api/auth", userRouter)
 app.use("/api/messages",messageRouter)

@@ -45,7 +45,7 @@ const Sidebar = () => {
   const [chatbotInput, setChatbotInput] = useState("");
   const [isBotTyping, setIsBotTyping] = useState(false);
   const [chatbotMessages, setChatbotMessages] = useState([
-    { sender: 'bot', text: "Hello! I am QuickBot, your virtual assistant. Ask me anything about QuickChat encryption, WebSockets, or group settings!", time: new Date() }
+    { sender: 'bot', text: "Hello! I am Dialogue Bot, your virtual assistant. Ask me anything about Dialogue encryption, WebSockets, or group settings!", time: new Date() }
   ]);
 
   const chatbotScrollEndRef = useRef(null);
@@ -81,7 +81,7 @@ const Sidebar = () => {
   // Load chatbot messages from local storage when authenticated user changes
   useEffect(() => {
     if (authUser?._id) {
-      const stored = localStorage.getItem("quickbot_chat_" + authUser._id);
+      const stored = localStorage.getItem("dialoguebot_chat_" + authUser._id);
       if (stored) {
         try {
           const parsed = JSON.parse(stored);
@@ -95,7 +95,7 @@ const Sidebar = () => {
         }
       } else {
         setChatbotMessages([
-          { sender: 'bot', text: "Hello! I am QuickBot, your virtual assistant. Ask me anything about QuickChat encryption, WebSockets, or group settings!", time: new Date() }
+          { sender: 'bot', text: "Hello! I am Dialogue Bot, your virtual assistant. Ask me anything about Dialogue encryption, WebSockets, or group settings!", time: new Date() }
         ]);
       }
     }
@@ -104,7 +104,7 @@ const Sidebar = () => {
   // Sync chatbot messages to local storage
   useEffect(() => {
     if (authUser?._id && chatbotMessages.length > 0) {
-      localStorage.setItem("quickbot_chat_" + authUser._id, JSON.stringify(chatbotMessages));
+      localStorage.setItem("dialoguebot_chat_" + authUser._id, JSON.stringify(chatbotMessages));
     }
   }, [chatbotMessages, authUser]);
 
@@ -227,7 +227,7 @@ const Sidebar = () => {
         });
       }
     } catch (error) {
-      console.error("QuickBot streaming error:", error);
+      console.error("Dialogue Bot streaming error:", error);
       toast.error(error.message || "Error communicating with chatbot service.");
       setChatbotMessages(prev => {
         const newMsgs = [...prev];
@@ -281,17 +281,17 @@ const Sidebar = () => {
               <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-[#111111]"></span>
             </div>
             <div className="flex flex-col leading-none text-left">
-              <span className="text-sm font-bold text-[#FAFAFA]">QuickBot</span>
+              <span className="text-sm font-bold text-[#FAFAFA]">Dialogue Bot</span>
               <span className="text-[10px] text-green-400 mt-0.5">Online · Powered by Llama 4</span>
             </div>
           </div>
           <button
             onClick={() => {
               if (authUser?._id) {
-                localStorage.removeItem("quickbot_chat_" + authUser._id);
+                localStorage.removeItem("dialoguebot_chat_" + authUser._id);
               }
               setChatbotMessages([
-                { sender: 'bot', text: "Hello! I am QuickBot, your virtual assistant. Ask me anything about QuickChat encryption, WebSockets, or group settings!", time: new Date() }
+                { sender: 'bot', text: "Hello! I am Dialogue Bot, your virtual assistant. Ask me anything about Dialogue encryption, WebSockets, or group settings!", time: new Date() }
               ]);
             }}
             className="p-1.5 rounded-lg hover:bg-white/10 text-[#9CA3AF] hover:text-red-400 transition-all duration-200"
@@ -385,7 +385,7 @@ const Sidebar = () => {
             type="text"
             value={chatbotInput}
             onChange={(e) => setChatbotInput(e.target.value)}
-            placeholder="Message QuickBot..."
+            placeholder="Message Dialogue Bot..."
             autoFocus
             disabled={isBotTyping}
             className="flex-1 bg-white/5 border border-white/10 focus:border-[#2D4A6B]/60 rounded-xl outline-none text-sm text-[#FAFAFA] placeholder-[#555] py-2.5 px-4 transition-colors disabled:opacity-50"
@@ -450,11 +450,11 @@ const Sidebar = () => {
                 </div>
 
                 <div className='flex items-center gap-1.5'>
-                    {/* QuickBot Button */}
+                    {/* Dialogue Bot Button */}
                     <button
                       onClick={() => setIsChatbotOpen(true)}
                       className='p-2 rounded-lg hover:bg-white/5 text-[#9CA3AF] hover:text-[#FAFAFA] transition-all duration-200 relative'
-                      title='QuickBot AI Assistant'
+                      title='Dialogue Bot AI Assistant'
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />

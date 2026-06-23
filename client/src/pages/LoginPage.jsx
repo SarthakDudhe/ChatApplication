@@ -37,13 +37,13 @@ const LoginPage = () => {
           {/* Logo */}
           <div className='w-20 h-20 rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden'
             style={{ backgroundColor: '#1C2B3A', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <img src={assets.logo_icon} alt="QuickChat" className='w-12 h-12 object-contain' />
+            <img src={assets.logo_icon} alt="Dialogue" className='w-12 h-12 object-contain' />
           </div>
 
           {/* Brand name */}
           <div className='flex flex-col gap-2'>
             <h1 className='text-4xl font-bold tracking-tight' style={{ fontFamily: "'Outfit', sans-serif", color: '#FAFAFA' }}>
-              QuickChat
+              Dialogue
             </h1>
             <p className='text-base font-medium' style={{ color: 'rgba(250,250,250,0.5)' }}>
               Enterprise Messaging. Redefined.
@@ -83,9 +83,9 @@ const LoginPage = () => {
         {/* Mobile logo */}
         <div className='md:hidden flex items-center gap-2 mb-8'>
           <div className='w-8 h-8 rounded-lg overflow-hidden' style={{ backgroundColor: '#1C2B3A' }}>
-            <img src={assets.logo_icon} alt="QuickChat" className='w-full h-full object-contain p-1' />
+            <img src={assets.logo_icon} alt="Dialogue" className='w-full h-full object-contain p-1' />
           </div>
-          <span className='text-lg font-bold' style={{ fontFamily: "'Outfit', sans-serif", color: '#1A1A1A' }}>QuickChat</span>
+          <span className='text-lg font-bold' style={{ fontFamily: "'Outfit', sans-serif", color: '#1A1A1A' }}>Dialogue</span>
         </div>
 
         {/* Auth Card */}
@@ -113,7 +113,7 @@ const LoginPage = () => {
               </div>
               <p className='text-sm' style={{ color: '#9CA3AF' }}>
                 {currState === 'Sign Up'
-                  ? (isDataSubmitted ? 'Almost there! Tell us a bit about yourself.' : 'Join thousands of teams using QuickChat.')
+                  ? (isDataSubmitted ? 'Almost there! Tell us a bit about yourself.' : 'Join thousands of teams using Dialogue.')
                   : 'Sign in to continue your conversations.'}
               </p>
             </div>

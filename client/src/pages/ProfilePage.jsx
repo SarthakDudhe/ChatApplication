@@ -66,7 +66,7 @@ const ProfilePage = () => {
               Profile Settings
             </h2>
             <p className='text-xs mt-0.5' style={{ color: 'rgba(250,250,250,0.45)' }}>
-              Update your presence on QuickChat
+              Update your presence on Dialogue
             </p>
           </div>
 
