@@ -94,9 +94,8 @@ Modern organizations face a trilemma when implementing user messaging:
 
 For developers and contributors looking to expand the visual assets of this repository, insert media links into the placeholders below:
 
-* **[PLACEHOLDER] Login & Onboarding Flow GIF**
-  * *Recommended Dimensions*: `800x500`
-  * *Description*: Screen recording showing the dynamic two-step onboarding workflow, credentials submission, and the profile photo edit trigger with Cloudinary image updates.
+ <img width="800" height="500" alt="Screenshot 2026-06-23 141150" src="https://github.com/user-attachments/assets/a206fb8a-89bb-48ff-99ca-75aacf64bb1e" />
+  * *Description*: Screen showing the dynamic two-step onboarding workflow, credentials submission, and the profile photo edit trigger with Cloudinary image updates.
 * **[PLACEHOLDER] Group Management Operations Demonstration**
   * *Recommended Dimensions*: `1000x600`
   * *Description*: Demonstrates an admin creating a group, selecting contacts, updating group avatars with client-side compression, adding new members, and removing members.
