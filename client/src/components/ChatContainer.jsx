@@ -476,7 +476,12 @@ const ChatContainer = () => {
             <input 
               onChange={handleInputChange} 
               value={input} 
-              onKeyDown={(e)=>e.key ==="Enter"? handlesendMessage(e): null} 
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handlesendMessage(e);
+                }
+              }}
               type="text" 
               placeholder='Type your message here...' 
               className='flex-1 text-sm py-3 bg-transparent border-none outline-none text-[#1A1A1A] placeholder-[#9CA3AF]'
