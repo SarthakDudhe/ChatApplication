@@ -8,7 +8,7 @@ import { AuthContext } from '../context/AuthContext.jsx'
 const App = () => {
   const {authUser}=useContext(AuthContext)
   return (
-    <div className="min-h-screen w-screen bg-[#1A1A1A] overflow-hidden">
+    <div className="min-h-screen w-screen bg-[#F5F5F0] overflow-hidden">
       <Toaster/>
       <Routes>
         <Route path='/' element={authUser ? <HomePage/>: <Navigate to="/login"/>}/>

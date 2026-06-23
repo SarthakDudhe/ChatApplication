@@ -8,8 +8,8 @@ const HomePage = () => {
   const {selectedUser}=useContext(ChatContext)
    
   return (
-    <div className='w-screen h-screen bg-[#1A1A1A] text-[#FAF9F6] overflow-hidden select-none'>
-       <div className={`h-full w-full grid grid-cols-1 relative ${selectedUser ? 'md:grid-cols-[280px_1fr_300px] xl:grid-cols-[320px_1fr_320px]' : 'md:grid-cols-[320px_1fr]'} bg-[#1A1A1A]`}>
+    <div className='w-screen h-screen bg-[#F5F5F0] text-[#1A1A1A] overflow-hidden select-none'>
+       <div className={`h-full w-full grid grid-cols-1 relative ${selectedUser ? 'md:grid-cols-[280px_1fr_300px] xl:grid-cols-[320px_1fr_320px]' : 'md:grid-cols-[320px_1fr]'} bg-[#F5F5F0]`}>
         <Sidebar/>
         <ChatContainer/>
         <RightSidebar/>
