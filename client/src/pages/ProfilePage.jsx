@@ -6,12 +6,12 @@ import { compressImage } from '../lib/utils';
 import toast from 'react-hot-toast';
 
 const ProfilePage = () => {
-  const {authUser,updateProfile}=useContext(AuthContext)
-  const navigate=useNavigate();
+  const { authUser, updateProfile } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const [selectedimage,setselectedimage]=useState(null);
-  const [name,setname]=useState("");
-  const [bio,setBio]=useState("");
+  const [selectedimage, setselectedimage] = useState(null);
+  const [name, setname] = useState("");
+  const [bio, setBio] = useState("");
 
   useEffect(() => {
     if (authUser) {
@@ -34,83 +34,178 @@ const ProfilePage = () => {
     } catch (error) {
       toast.error("Error processing image file");
     }
-  }
+  };
 
   return (
-    <div className='min-h-screen bg-[#1A1A1A] flex items-center justify-center p-6 select-none'>
-      <div className='w-full max-w-2xl glass-panel text-[#8E8E93] flex items-center justify-between max-sm:flex-col-reverse rounded-2xl border border-white/10 shadow-2xl p-8 md:p-12 gap-8 animate-fade-in'>
-        <form onSubmit={handleSubmit} className='flex flex-col gap-6 flex-1 w-full'>
-          <div>
-            <h3 className='text-xl font-bold bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent'>Profile Details</h3>
-            <p className='text-xs text-[#8E8E93] mt-1'>Update your presence on QuickChat</p>
+    <div className='min-h-screen flex items-center justify-center p-6 select-none'
+      style={{ backgroundColor: '#F5F5F0', fontFamily: "'Inter', sans-serif" }}>
+
+      <div className='w-full max-w-2xl animate-fade-in'>
+
+        {/* Back button */}
+        <button
+          onClick={() => navigate('/')}
+          className='flex items-center gap-2 mb-6 text-sm font-medium transition-colors'
+          style={{ color: '#6B7280' }}
+          onMouseEnter={e => e.currentTarget.style.color = '#1C2B3A'}
+          onMouseLeave={e => e.currentTarget.style.color = '#6B7280'}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+          </svg>
+          Back to Chats
+        </button>
+
+        {/* Card */}
+        <div className='rounded-2xl overflow-hidden'
+          style={{ backgroundColor: '#FFFFFF', border: '1px solid #E8E8E2', boxShadow: '0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04)' }}>
+
+          {/* Card Header Bar */}
+          <div className='px-8 py-5' style={{ backgroundColor: '#1A1A1A' }}>
+            <h2 className='text-lg font-bold' style={{ fontFamily: "'Outfit', sans-serif", color: '#FAFAFA' }}>
+              Profile Settings
+            </h2>
+            <p className='text-xs mt-0.5' style={{ color: 'rgba(250,250,250,0.45)' }}>
+              Update your presence on QuickChat
+            </p>
           </div>
 
-          <label htmlFor="avatar" className='flex items-center gap-4 cursor-pointer text-sm font-semibold text-[#FAF9F6] hover:text-violet-400 transition-colors'>
-            <input onChange={(e)=>setselectedimage(e.target.files[0])} type="file" id="avatar" accept='.png, .jpg, .jpeg' hidden />
-            <img 
-              src={selectedimage ? URL.createObjectURL(selectedimage) : authUser?.profilePic || assets.avatar_icon } 
-              className='w-14 h-14 rounded-full object-cover border border-white/10 shadow-md'
-              alt="Avatar Preview"
-            />
-            <span>Upload Profile Image</span>
-          </label>
-          
-          <div className='flex flex-col gap-1.5'>
-            <label className='text-xs text-[#8E8E93] font-semibold uppercase tracking-wider'>Display Name</label>
-            <input 
-              onChange={(e)=>setname(e.target.value)} 
-              value={name} 
-              type="text" 
-              required 
-              placeholder='Your Name' 
-              className='p-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-gold/50 focus:ring-1 focus:ring-accent-gold/50 text-[#FAF9F6] placeholder-neutral-500 transition-all text-sm'
-            />
-          </div>
+          {/* Card Body */}
+          <div className='p-8 flex flex-col md:flex-row gap-10 items-start'>
 
-          <div className='flex flex-col gap-1.5'>
-            <label className='text-xs text-[#8E8E93] font-semibold uppercase tracking-wider'>Status Bio</label>
-            <textarea 
-              onChange={(e)=>setBio(e.target.value)} 
-              value={bio} 
-              rows={4} 
-              placeholder='Write something about yourself...' 
-              className='p-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-gold/50 focus:ring-1 focus:ring-accent-gold/50 text-[#FAF9F6] placeholder-neutral-500 transition-all text-sm resize-none'
-            ></textarea>
-          </div>
-            
-          <div className='flex justify-end gap-3 border-t border-white/5 pt-4 mt-2'>
-            <button 
-              type="button" 
-              onClick={() => navigate('/')} 
-              className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-semibold transition-colors text-[#FAF9F6]"
-            >
-              Cancel
-            </button>
-            <button 
-              type="submit" 
-              className='px-6 py-2.5 text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 text-[#FAF9F6] rounded-xl cursor-pointer hover:shadow-lg hover:shadow-violet-500/10 active:scale-[0.99] transition-all'
-            >
-              Save Changes
-            </button>
-          </div>
-        </form>
+            {/* Avatar Section */}
+            <div className='flex flex-col items-center gap-3 flex-shrink-0 md:w-44'>
+              <label htmlFor="avatar" className='relative group cursor-pointer'>
+                <input
+                  onChange={(e) => setselectedimage(e.target.files[0])}
+                  type="file"
+                  id="avatar"
+                  accept='.png, .jpg, .jpeg'
+                  hidden
+                />
+                {/* Avatar image */}
+                <div className='w-36 h-36 rounded-full overflow-hidden relative'
+                  style={{ border: '3px solid #E8E8E2', boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }}>
+                  <img
+                    src={selectedimage ? URL.createObjectURL(selectedimage) : authUser?.profilePic || assets.avatar_icon}
+                    alt="Profile"
+                    className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-105'
+                  />
+                  {/* Hover overlay */}
+                  <div className='absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200'
+                    style={{ backgroundColor: 'rgba(28,43,58,0.65)' }}>
+                    <div className='flex flex-col items-center gap-1'>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="white" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+                      </svg>
+                      <span className='text-[10px] font-semibold text-white'>Change</span>
+                    </div>
+                  </div>
+                </div>
+              </label>
 
-        <label htmlFor="avatar" className='relative group cursor-pointer flex flex-col items-center gap-4 flex-shrink-0'>
-          <div className='relative overflow-hidden rounded-full border-2 border-white/10 shadow-2xl w-40 h-40'>
-            <img 
-              src={selectedimage ? URL.createObjectURL(selectedimage) : authUser?.profilePic || assets.avatar_icon} 
-              alt="Profile Avatar" 
-              className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-105' 
-            />
-            <div className='absolute inset-0 bg-black/55 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200'>
-              <span className='text-xs font-semibold text-[#FAF9F6] bg-[#242424]/80 px-3 py-1.5 rounded-full border border-white/10'>Edit Photo 📸</span>
+              {/* Edit photo label */}
+              <label htmlFor="avatar" className='text-xs font-semibold cursor-pointer transition-colors'
+                style={{ color: '#1C2B3A' }}
+                onMouseEnter={e => e.currentTarget.style.textDecoration = 'underline'}
+                onMouseLeave={e => e.currentTarget.style.textDecoration = 'none'}>
+                Edit Photo
+              </label>
+
+              {selectedimage && (
+                <button
+                  type="button"
+                  onClick={() => setselectedimage(null)}
+                  className='text-xs transition-colors'
+                  style={{ color: '#9CA3AF' }}
+                  onMouseEnter={e => e.currentTarget.style.color = '#EF4444'}
+                  onMouseLeave={e => e.currentTarget.style.color = '#9CA3AF'}
+                >
+                  Remove
+                </button>
+              )}
             </div>
+
+            {/* Form Section */}
+            <form onSubmit={handleSubmit} className='flex flex-col gap-5 flex-1 w-full'>
+
+              {/* Display Name */}
+              <div className='flex flex-col gap-1.5'>
+                <label className='text-xs font-semibold uppercase tracking-wider' style={{ color: '#6B7280' }}>
+                  Display Name
+                </label>
+                <input
+                  onChange={(e) => setname(e.target.value)}
+                  value={name}
+                  type="text"
+                  required
+                  placeholder='Your Name'
+                  className='w-full px-4 py-3 rounded-lg text-sm transition-all outline-none'
+                  style={{ backgroundColor: '#FAFAFA', border: '1px solid #E8E8E2', color: '#1A1A1A' }}
+                  onFocus={e => { e.target.style.borderColor = '#1C2B3A'; e.target.style.boxShadow = '0 0 0 3px rgba(28,43,58,0.08)'; }}
+                  onBlur={e => { e.target.style.borderColor = '#E8E8E2'; e.target.style.boxShadow = 'none'; }}
+                />
+              </div>
+
+              {/* Bio */}
+              <div className='flex flex-col gap-1.5'>
+                <label className='text-xs font-semibold uppercase tracking-wider' style={{ color: '#6B7280' }}>
+                  Status Bio
+                </label>
+                <textarea
+                  onChange={(e) => setBio(e.target.value)}
+                  value={bio}
+                  rows={4}
+                  placeholder='Write something about yourself...'
+                  className='w-full px-4 py-3 rounded-lg text-sm transition-all outline-none resize-none'
+                  style={{ backgroundColor: '#FAFAFA', border: '1px solid #E8E8E2', color: '#1A1A1A' }}
+                  onFocus={e => { e.target.style.borderColor = '#1C2B3A'; e.target.style.boxShadow = '0 0 0 3px rgba(28,43,58,0.08)'; }}
+                  onBlur={e => { e.target.style.borderColor = '#E8E8E2'; e.target.style.boxShadow = 'none'; }}
+                />
+              </div>
+
+              {/* Email (read-only display) */}
+              {authUser?.email && (
+                <div className='flex flex-col gap-1.5'>
+                  <label className='text-xs font-semibold uppercase tracking-wider' style={{ color: '#6B7280' }}>
+                    Email
+                  </label>
+                  <div className='px-4 py-3 rounded-lg text-sm'
+                    style={{ backgroundColor: '#F5F5F0', border: '1px solid #E8E8E2', color: '#9CA3AF' }}>
+                    {authUser.email}
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className='flex justify-end gap-3 pt-3 mt-2' style={{ borderTop: '1px solid #E8E8E2' }}>
+                <button
+                  type="button"
+                  onClick={() => navigate('/')}
+                  className='px-5 py-2.5 rounded-lg text-sm font-semibold transition-all'
+                  style={{ backgroundColor: 'transparent', border: '1px solid #E8E8E2', color: '#6B7280' }}
+                  onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#F5F5F0'; e.currentTarget.style.color = '#1A1A1A'; }}
+                  onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#6B7280'; }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className='px-6 py-2.5 rounded-lg text-sm font-semibold transition-all'
+                  style={{ backgroundColor: '#1C2B3A', color: '#FAFAFA' }}
+                  onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#253545'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(28,43,58,0.25)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#1C2B3A'; e.currentTarget.style.boxShadow = 'none'; }}
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
           </div>
-          <span className='text-[10px] text-[#8E8E93] font-semibold uppercase tracking-widest'>Current Photo</span>
-        </label>
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default ProfilePage;
