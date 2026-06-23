@@ -278,7 +278,7 @@ const Sidebar = () => {
 
   if (isChatbotOpen) {
     return (
-      <div className={`bg-[#1A1A1A] border-r border-white/10 h-full text-[#FAFAFA] flex flex-col select-none transition-all duration-300 ${selectedUser ? "max-md:hidden" : ""}`}>
+      <div className={`bg-[#1A1A1A] border-r border-white/10 h-full overflow-hidden text-[#FAFAFA] flex flex-col select-none transition-all duration-300 ${selectedUser ? "max-md:hidden" : ""}`}>
         {/* Chatbot Header */}
         <div className="flex-shrink-0 bg-[#111111] border-b border-white/10 px-4 py-3 flex items-center gap-3">
           <button
@@ -323,7 +323,7 @@ const Sidebar = () => {
         </div>
 
         {/* Messages Feed */}
-        <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 sidebar-scroll" style={{background: 'linear-gradient(180deg, #161616 0%, #1A1A1A 100%)'}}>
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 flex flex-col gap-3 sidebar-scroll" style={{background: 'linear-gradient(180deg, #161616 0%, #1A1A1A 100%)'}}>
           {chatbotMessages.map((msg, i) => {
             if (msg.sender === 'bot' && !msg.text) return null;
             return (
@@ -451,7 +451,7 @@ const Sidebar = () => {
   }
 
   return (
-    <div className={`bg-[#1A1A1A] border-r border-white/10 h-full p-4 text-[#FAFAFA] flex flex-col select-none transition-all duration-300 relative ${selectedUser?"max-md:hidden":""}`}>
+    <div className={`bg-[#1A1A1A] border-r border-white/10 h-full overflow-hidden p-4 text-[#FAFAFA] flex flex-col select-none transition-all duration-300 relative ${selectedUser?"max-md:hidden":""}`}>
         {/* User Profile Info Header */}
         <div className='pb-4 flex-shrink-0 border-b border-white/10'>
             <div className='flex justify-between items-center'>
@@ -574,7 +574,7 @@ const Sidebar = () => {
         </div>
 
       {/* Categorized Lists */}
-      <div className='flex-1 overflow-y-auto pr-1 mt-4 flex flex-col gap-5 sidebar-scroll'>
+      <div className='flex-1 min-h-0 overflow-y-auto pr-1 mt-4 flex flex-col gap-5 sidebar-scroll'>
         {/* Groups Column */}
         {filteredGroups.length > 0 && (
           <div>
