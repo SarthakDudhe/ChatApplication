@@ -22,7 +22,11 @@ const RightSidebar = () => {
       {/* Profile summary card */}
       <div className='flex flex-col items-center gap-4 text-center mt-6 flex-shrink-0'>
         <div className='relative'>
-          <img src={selectedUser?.profilePic || assets.avatar_icon} alt="Avatar" className='w-20 h-20 rounded-full object-cover border border-[#E8E8E2] shadow-sm' />
+          <img 
+            src={selectedUser.isGroup ? (selectedUser.groupAvatar || assets.avatar_icon) : (selectedUser?.profilePic || assets.avatar_icon)} 
+            alt="Avatar" 
+            className='w-20 h-20 rounded-full object-cover border border-[#E8E8E2] shadow-sm' 
+          />
           {!selectedUser.isGroup && onlineUser.includes(selectedUser._id) && (
             <span className='absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 border-2 border-[#F5F5F0] animate-pulse'></span>
           )}
