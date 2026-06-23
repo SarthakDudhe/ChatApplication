@@ -9,9 +9,9 @@
   <br />
 
   <!-- Logo -->
-  <img width="240" alt="QuickChat Logo" src="https://github.com/user-attachments/assets/364da12b-e7be-4f91-af80-fb0ed924eb07" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);" />
+  <img width="240" alt="Dialogue Logo" src="https://github.com/user-attachments/assets/364da12b-e7be-4f91-af80-fb0ed924eb07" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);" />
 
-  <h1>⚡ QuickChat — Enterprise Real-Time Chat Infrastructure</h1>
+  <h1>⚡ Dialogue — Enterprise Real-Time Chat Infrastructure</h1>
 
   <p>
     <b>A zero-trust, high-performance messaging platform featuring Client-Side AES-256 End-to-End Encryption (E2EE), WebSocket-driven room concurrency, Llama-4 AI assistant stream integrations, and a premium Smoke White & Ink Blue enterprise interface.</b>
