@@ -86,8 +86,8 @@ Modern organizations face a trilemma when implementing user messaging:
 ## 📸 Interface Preview
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/823dbe92-af5a-4a21-9d01-c84d36313951" alt="Dialogue Main Interface Preview" width="85%" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);" />
-  <p><i>Figure 1: High-fidelity three-panel chat interface displaying theme consistency, direct messages, and real-time active indicators.</i></p>
+
+  <img width="85%"  alt="Screenshot 2026-06-23 141211" src="https://github.com/user-attachments/assets/e6d0fa56-7f50-45dc-97c3-274a23f9bc08" />
 </div>
 
 ### 🎨 Visual & Interactive Placeholders
