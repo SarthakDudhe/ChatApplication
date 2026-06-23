@@ -257,6 +257,174 @@ const Sidebar = () => {
     await submitChatbotQuery(chipText);
   };
 
+  if (isChatbotOpen) {
+    return (
+      <div className={`bg-[#1A1A1A] border-r border-white/10 h-full text-[#FAFAFA] flex flex-col select-none transition-all duration-300 ${selectedUser ? "max-md:hidden" : ""}`}>
+        {/* Chatbot Header */}
+        <div className="flex-shrink-0 bg-[#111111] border-b border-white/10 px-4 py-3 flex items-center gap-3">
+          <button
+            onClick={() => setIsChatbotOpen(false)}
+            className="p-1.5 rounded-lg hover:bg-white/10 text-[#9CA3AF] hover:text-white transition-all duration-200"
+            title="Back to Contacts"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+          <div className="flex items-center gap-2.5 flex-1">
+            <div className="relative flex-shrink-0">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#1C2B3A] to-[#2D4A6B] flex items-center justify-center border border-white/20 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4.5 h-4.5 text-white">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
+                </svg>
+              </div>
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-[#111111]"></span>
+            </div>
+            <div className="flex flex-col leading-none text-left">
+              <span className="text-sm font-bold text-[#FAFAFA]">QuickBot</span>
+              <span className="text-[10px] text-green-400 mt-0.5">Online · Powered by Llama 4</span>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              if (authUser?._id) {
+                localStorage.removeItem("quickbot_chat_" + authUser._id);
+              }
+              setChatbotMessages([
+                { sender: 'bot', text: "Hello! I am QuickBot, your virtual assistant. Ask me anything about QuickChat encryption, WebSockets, or group settings!", time: new Date() }
+              ]);
+            }}
+            className="p-1.5 rounded-lg hover:bg-white/10 text-[#9CA3AF] hover:text-red-400 transition-all duration-200"
+            title="Clear chat history"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Messages Feed */}
+        <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 sidebar-scroll" style={{background: 'linear-gradient(180deg, #161616 0%, #1A1A1A 100%)'}}>
+          {chatbotMessages.map((msg, i) => {
+            if (msg.sender === 'bot' && !msg.text) return null;
+            return (
+              <div key={i} className={`flex items-end gap-2 ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                {msg.sender === 'bot' && (
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#1C2B3A] to-[#2D4A6B] flex items-center justify-center flex-shrink-0 mb-1 border border-white/10">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3 h-3 text-white">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
+                    </svg>
+                  </div>
+                )}
+                <div className="flex flex-col gap-0.5 max-w-[78%]">
+                  <div className={`p-2.5 px-3.5 rounded-2xl text-xs leading-relaxed text-left break-words ${
+                    msg.sender === 'user'
+                      ? 'bg-[#1C2B3A] text-white rounded-br-none border border-white/10'
+                      : 'bg-[#242424] text-[#FAFAFA] rounded-bl-none border border-white/10'
+                  }`}>
+                    {msg.text}
+                  </div>
+                  <span className={`text-[9px] text-[#555] px-1 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
+                    {new Date(msg.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Starter Chips */}
+          {chatbotMessages.length === 1 && !isBotTyping && (
+            <div className="flex flex-col gap-2 mt-2">
+              <p className="text-[10px] text-[#555] font-semibold uppercase tracking-widest text-left px-1">Try asking...</p>
+              <div className="flex flex-col gap-2">
+                {[
+                  { icon: "🔒", label: "How does E2EE work?" },
+                  { icon: "👥", label: "What are group roles?" },
+                  { icon: "⚡", label: "Tell me about WebSockets" }
+                ].map((chip) => (
+                  <button
+                    key={chip.label}
+                    type="button"
+                    onClick={() => handleSelectStarterChip(`${chip.icon} ${chip.label}`)}
+                    className="flex items-center gap-2.5 bg-[#242424] hover:bg-[#2D4A6B]/20 border border-white/10 hover:border-[#2D4A6B]/50 text-[#FAFAFA] text-xs py-2.5 px-3.5 rounded-xl transition-all duration-150 active:scale-95 text-left group"
+                  >
+                    <span className="text-sm">{chip.icon}</span>
+                    <span className="text-xs font-medium text-[#FAFAFA]/80 group-hover:text-white">{chip.label}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-3.5 h-3.5 ml-auto text-[#555] group-hover:text-[#2D4A6B] transition-colors">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Typing Indicator */}
+          {isBotTyping && chatbotMessages[chatbotMessages.length - 1]?.sender === 'bot' && !chatbotMessages[chatbotMessages.length - 1]?.text && (
+            <div className="flex items-end gap-2">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#1C2B3A] to-[#2D4A6B] flex items-center justify-center flex-shrink-0 mb-1 border border-white/10">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3 h-3 text-white">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
+                </svg>
+              </div>
+              <div className="bg-[#242424] border border-white/10 p-3 px-4 rounded-2xl rounded-bl-none">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#555] animate-bounce" style={{animationDelay:'0ms'}}></span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#555] animate-bounce" style={{animationDelay:'150ms'}}></span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#555] animate-bounce" style={{animationDelay:'300ms'}}></span>
+                </div>
+              </div>
+            </div>
+          )}
+          <div ref={chatbotScrollEndRef}></div>
+        </div>
+
+        {/* Input Bar */}
+        <form onSubmit={handleChatbotSubmit} className="flex-shrink-0 border-t border-white/10 p-3 bg-[#111111] flex gap-2.5 items-center">
+          <input
+            type="text"
+            value={chatbotInput}
+            onChange={(e) => setChatbotInput(e.target.value)}
+            placeholder="Message QuickBot..."
+            autoFocus
+            disabled={isBotTyping}
+            className="flex-1 bg-white/5 border border-white/10 focus:border-[#2D4A6B]/60 rounded-xl outline-none text-sm text-[#FAFAFA] placeholder-[#555] py-2.5 px-4 transition-colors disabled:opacity-50"
+          />
+          <button
+            type="submit"
+            disabled={isBotTyping || !chatbotInput.trim()}
+            className="w-9 h-9 rounded-xl bg-[#1C2B3A] hover:bg-[#2D4A6B] flex items-center justify-center text-white transition-all active:scale-95 flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed border border-white/10"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+            </svg>
+          </button>
+        </form>
+
+        {/* Modals (keep available in chatbot view too) */}
+        {activePreviewImage && (
+          <div
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/85 backdrop-blur-md transition-all duration-300 animate-fade-in"
+            onClick={() => setActivePreviewImage(null)}
+          >
+            <div
+              className="relative max-w-sm w-full mx-4 flex flex-col items-center gap-4 bg-[#1A1A1A]/95 backdrop-blur-xl border border-white/10 p-5 rounded-2xl shadow-2xl animate-fade-in-scale"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="w-full flex justify-between items-center border-b border-white/10 pb-3">
+                <h3 className="text-sm font-semibold text-[#FAFAFA] truncate max-w-[80%]">{activePreviewImage.name}</h3>
+                <button onClick={() => setActivePreviewImage(null)} className="text-[#9CA3AF] hover:text-[#FAFAFA] bg-white/5 hover:bg-white/10 w-7 h-7 flex items-center justify-center rounded-full transition-all duration-200">✕</button>
+              </div>
+              <div className="relative w-full aspect-square max-h-[300px] overflow-hidden rounded-xl border border-white/10 bg-[#1A1A1A]">
+                <img src={activePreviewImage.img} alt={activePreviewImage.name} className="w-full h-full object-cover animate-fade-in" />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className={`bg-[#1A1A1A] border-r border-white/10 h-full p-4 text-[#FAFAFA] flex flex-col select-none transition-all duration-300 relative ${selectedUser?"max-md:hidden":""}`}>
         {/* User Profile Info Header */}
@@ -282,6 +450,21 @@ const Sidebar = () => {
                 </div>
 
                 <div className='flex items-center gap-1.5'>
+                    {/* QuickBot Button */}
+                    <button
+                      onClick={() => setIsChatbotOpen(true)}
+                      className='p-2 rounded-lg hover:bg-white/5 text-[#9CA3AF] hover:text-[#FAFAFA] transition-all duration-200 relative'
+                      title='QuickBot AI Assistant'
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
+                      </svg>
+                      <span className="absolute top-1.5 right-1.5 flex h-1.5 w-1.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2D4A6B] opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#2D4A6B]"></span>
+                      </span>
+                    </button>
+                    
                     {/* Create Group Button */}
                     <button 
                       onClick={() => setIsCreateGroupOpen(true)}
@@ -530,118 +713,7 @@ const Sidebar = () => {
         )}
       </div>
 
-      {/* Custom Chatbot Popup */}
-      {isChatbotOpen && (
-        <div className="absolute bottom-20 left-4 right-4 bg-white border border-[#E8E8E2] rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden max-h-[360px] text-[#1A1A1A] animate-fade-in-scale">
-          {/* Bot Header */}
-          <div className="bg-[#1A1A1A] text-white px-4 py-3 flex justify-between items-center flex-shrink-0">
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <div className="w-6 h-6 rounded-full bg-[#1C2B3A] flex items-center justify-center border border-white/20">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3.5 h-3.5 text-white">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
-                  </svg>
-                </div>
-                <span className="absolute bottom-0 right-0 w-1.5 h-1.5 rounded-full bg-green-500 border border-[#1A1A1A]"></span>
-              </div>
-              <div className="text-left leading-none">
-                <span className="text-xs font-bold font-headline text-white">QuickBot</span>
-                <p className="text-[8px] text-[#9CA3AF] mt-0.5">Online Assistant</p>
-              </div>
-            </div>
-            <button onClick={() => setIsChatbotOpen(false)} className="text-[#9CA3AF] hover:text-white transition-colors p-1">
-              ✕
-            </button>
-          </div>
 
-          {/* Bot Messages Feed */}
-          <div className="flex-1 overflow-y-auto p-3 bg-[#F5F5F0] flex flex-col gap-2.5 max-h-[220px] min-h-[160px] text-xs sidebar-scroll">
-            {chatbotMessages.map((msg, i) => {
-              if (msg.sender === 'bot' && !msg.text) return null;
-              return (
-                <div key={i} className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
-                  <div className={`p-2 px-3 rounded-xl max-w-[85%] text-left leading-relaxed ${msg.sender === 'user' ? 'bg-[#1C2B3A] text-white rounded-tr-none' : 'bg-white border border-[#E8E8E2] text-[#1A1A1A] rounded-tl-none shadow-sm'}`}>
-                    {msg.text}
-                  </div>
-                  <span className="text-[8px] text-[#9CA3AF] mt-0.5 px-1">
-                    {new Date(msg.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </span>
-                </div>
-              );
-            })}
-            {chatbotMessages.length === 1 && !isBotTyping && (
-              <div className="flex flex-col gap-1.5 mt-1 px-1">
-                <p className="text-[10px] text-[#9CA3AF] font-bold uppercase tracking-widest text-left">Suggested Questions</p>
-                <div className="flex flex-col gap-1 text-left">
-                  {[
-                    "🔒 How does E2EE work?",
-                    "👥 What are group roles?",
-                    "⚡ Tell me about WebSockets"
-                  ].map((chip) => (
-                    <button
-                      key={chip}
-                      type="button"
-                      onClick={() => handleSelectStarterChip(chip)}
-                      className="bg-white border border-[#E8E8E2] hover:border-[#1C2B3A]/50 text-[#1A1A1A] hover:bg-gray-50 text-[10px] py-1 px-2.5 rounded-xl shadow-sm transition-all duration-150 active:scale-95 text-left font-medium"
-                    >
-                      {chip}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-            {isBotTyping && chatbotMessages[chatbotMessages.length - 1]?.sender === 'bot' && !chatbotMessages[chatbotMessages.length - 1]?.text && (
-              <div className="flex flex-col items-start">
-                <div className="p-2.5 px-3.5 rounded-xl rounded-tl-none bg-white border border-[#E8E8E2] shadow-sm">
-                  <div className="flex items-center gap-1">
-                    <span className="w-1 h-1 rounded-full bg-[#9CA3AF] animate-bounce" style={{animationDelay:'0ms'}}></span>
-                    <span className="w-1 h-1 rounded-full bg-[#9CA3AF] animate-bounce" style={{animationDelay:'150ms'}}></span>
-                    <span className="w-1 h-1 rounded-full bg-[#9CA3AF] animate-bounce" style={{animationDelay:'300ms'}}></span>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={chatbotScrollEndRef}></div>
-          </div>
-
-          {/* Bot Input Bar */}
-          <form onSubmit={handleChatbotSubmit} className="border-t border-[#E8E8E2] p-2 bg-white flex gap-2 items-center flex-shrink-0">
-            <input 
-              type="text" 
-              value={chatbotInput}
-              onChange={(e) => setChatbotInput(e.target.value)}
-              placeholder="Ask QuickBot..." 
-              className="flex-1 bg-transparent border-none outline-none text-xs text-[#1A1A1A] placeholder-[#9CA3AF] py-1.5 px-2 text-left"
-            />
-            <button type="submit" className="w-7 h-7 rounded-lg bg-[#1C2B3A] hover:bg-[#253545] flex items-center justify-center text-white transition-all active:scale-95 flex-shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3.5 h-3.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-              </svg>
-            </button>
-          </form>
-        </div>
-      )}
-
-      {/* Floating Chatbot Trigger Button */}
-      <button 
-        onClick={() => setIsChatbotOpen(!isChatbotOpen)}
-        className="absolute bottom-4 right-4 w-11 h-11 rounded-full bg-[#1C2B3A] hover:bg-[#253545] text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all z-40 border border-white/20"
-        title="QuickBot AI Assistant"
-      >
-        <div className="relative">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 text-white">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
-          </svg>
-          {!isChatbotOpen && (
-            <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2D4A6B] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#2D4A6B]"></span>
-            </span>
-          )}
-        </div>
-      </button>
-
-      {/* Create Group Modal */}
       {isCreateGroupOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md transition-all duration-300">
           <div className="bg-[#1A1A1A] border border-white/10 w-full max-w-md p-6 rounded-2xl shadow-2xl flex flex-col gap-4 text-[#FAFAFA] mx-4 animate-fade-in-scale">
