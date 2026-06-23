@@ -12,7 +12,7 @@
   <h1>⚡ QuickChat — Enterprise Real-Time Chat Infrastructure</h1>
 
   <p>
-    <b>A high-performance, self-hosted messaging platform featuring Client-Side AES-256 End-to-End Encryption (E2EE), WebSocket-driven room concurrency, and an Obsidian-Gold glassmorphic UI.</b>
+    <b>A high-performance, self-hosted messaging platform featuring Client-Side AES-256 End-to-End Encryption (E2EE), WebSocket-driven room concurrency, and a premium Smoke White & Ink Blue enterprise UI.</b>
   </p>
 
   <p><i>"Where security meets instant communication."</i></p>
@@ -145,7 +145,7 @@ Modern organizations face a dilemma when implementing user messaging:
 * **Soft Deletions**
   * Deleting a message triggers a logical soft delete (`deleted: true`). Text content and images are expunged from the database, but the record is kept to preserve reply thread paths. The UI updates instantly with a `🚫 This message was deleted` marker.
 * **Contextual Replies**
-  * Hovering over a message exposes a reply action. This stores a reference ID in the `replyTo` schema field. The client UI renders a neat quote header with a gold accent link pointing back to the parent message.
+  * Hovering over a message exposes a reply action. This stores a reference ID in the `replyTo` schema field. The client UI renders a neat quote header with an Ink Blue accent link pointing back to the parent message.
 * **Emoji Picker & Message Reactions**
   * Seamless `emoji-picker-react` layout with click-outside hooks. Users can add quick emoji reactions to any message in the feed. Reactions update concurrently on all clients.
 
