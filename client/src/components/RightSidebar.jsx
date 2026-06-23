@@ -25,7 +25,9 @@ const RightSidebar = () => {
           <img 
             src={selectedUser.isGroup ? (selectedUser.groupAvatar || assets.avatar_icon) : (selectedUser?.profilePic || assets.avatar_icon)} 
             alt="Avatar" 
-            className='w-20 h-20 rounded-full object-cover border border-[#E8E8E2] shadow-sm' 
+            onContextMenu={(e) => e.preventDefault()}
+            draggable={false}
+            className='w-20 h-20 rounded-full object-cover border border-[#E8E8E2] shadow-sm select-none' 
           />
           {!selectedUser.isGroup && onlineUser.includes(selectedUser._id) && (
             <span className='absolute bottom-0 right-0 w-3 h-3 rounded-full bg-green-500 border-2 border-[#F5F5F0] animate-pulse'></span>
@@ -63,11 +65,9 @@ const RightSidebar = () => {
               {msgImages.map((url,index)=>(
                 <div 
                   key={index} 
-                  onClick={()=>window.open(url)} 
-                  className='cursor-pointer rounded-xl overflow-hidden border border-[#E8E8E2] hover:border-[#1C2B3A] transition-all duration-200 aspect-square bg-white shadow-sm'
-                  title="View full image"
+                  className='rounded-xl overflow-hidden border border-[#E8E8E2] transition-all duration-200 aspect-square bg-white shadow-sm select-none'
                 >
-                  <img src={url} alt="" className='w-full h-full object-cover hover:scale-105 transition-transform duration-300' />
+                  <img src={url} alt="" onContextMenu={(e)=>e.preventDefault()} draggable={false} className='w-full h-full object-cover' />
                 </div>
               ))}
             </div>
