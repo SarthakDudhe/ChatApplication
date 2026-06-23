@@ -1,5 +1,5 @@
 import express from "express"
-import { checkAuth, login, signup, updateProfile } from "../controllers/userController.js";
+import { checkAuth, login, signup, updateProfile, getChatbotResponse } from "../controllers/userController.js";
 import { protectRoute } from "../middleware/auth.js";
 import rateLimit from "express-rate-limit";
 
@@ -19,6 +19,7 @@ userRouter.post('/signup',authLimiter,signup);
 userRouter.post('/login',authLimiter,login);
 userRouter.put('/update-profile',protectRoute,updateProfile);
 userRouter.get('/check',protectRoute,checkAuth);
+userRouter.post('/chatbot',protectRoute,getChatbotResponse);
 
 
 export default userRouter;

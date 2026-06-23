@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
 import { ChatContext } from '../../context/ChatContext'
 import toast from 'react-hot-toast'
+import axios from 'axios'
 
 const Sidebar = () => {
 
@@ -144,38 +145,31 @@ const Sidebar = () => {
   };
 
   // Chatbot submit logic
-  const handleChatbotSubmit = (e) => {
+  const handleChatbotSubmit = async (e) => {
     e.preventDefault();
     if (!chatbotInput.trim()) return;
 
     const userQuery = chatbotInput.trim();
     const newUserMessage = { sender: 'user', text: userQuery, time: new Date() };
-    setChatbotMessages(prev => [...prev, newUserMessage]);
+    const updatedMessages = [...chatbotMessages, newUserMessage];
+    setChatbotMessages(updatedMessages);
     setChatbotInput("");
     setIsBotTyping(true);
 
-    // AI Bot simulation delay
-    setTimeout(() => {
-      let botResponse = "I'm not sure about that. Try asking about 'encryption', 'websockets', 'groups', or 'who made this'!";
-      const query = userQuery.toLowerCase();
-
-      if (query.includes("hi") || query.includes("hello") || query.includes("hey")) {
-        botResponse = "Hello! I am QuickBot, your virtual assistant. Ask me anything about encryption, WebSockets, or group settings!";
-      } else if (query.includes("encryption") || query.includes("secure") || query.includes("e2ee") || query.includes("cryptography")) {
-        botResponse = "QuickChat implements client-side AES-256 encryption. Messages are encrypted locally on your browser using CryptoJS before sending over Socket.io. The MongoDB database only stores cipher text!";
-      } else if (query.includes("websocket") || query.includes("socket") || query.includes("realtime") || query.includes("typing")) {
-        botResponse = "Socket.io manages real-time messaging, typing indicators, and user presence indicators in constant O(1) time by holding in-memory socket maps on the Node.js server.";
-      } else if (query.includes("group") || query.includes("admin") || query.includes("member")) {
-        botResponse = "Groups allow multiple contacts to chat. Group Admins can edit names/avatars, add participants, and remove members. Group ownership transfers dynamically when the Admin leaves.";
-      } else if (query.includes("developer") || query.includes("who made") || query.includes("author")) {
-        botResponse = "QuickChat was engineered by Saksh, Sarthak Dudhe, and the development team to deliver a premium, secure enterprise messaging platform.";
-      } else if (query.includes("cors") || query.includes("origin") || query.includes("port")) {
-        botResponse = "CORS issues are handled by mapping the client VITE_BACKEND_URL to the local server port 5000 during testing, or specifying allowed domain lists on the backend CORS options.";
+    try {
+      const { data } = await axios.post("/api/auth/chatbot", { messages: updatedMessages });
+      if (data.success) {
+        setChatbotMessages(prev => [...prev, { sender: 'bot', text: data.text, time: new Date() }]);
+      } else {
+        toast.error(data.message || "Failed to get AI response");
+        setChatbotMessages(prev => [...prev, { sender: 'bot', text: "Sorry, I ran into an error connecting to Groq AI: " + data.message, time: new Date() }]);
       }
-
-      setChatbotMessages(prev => [...prev, { sender: 'bot', text: botResponse, time: new Date() }]);
+    } catch (error) {
+      console.error(error);
+      setChatbotMessages(prev => [...prev, { sender: 'bot', text: "Error communicating with chatbot service.", time: new Date() }]);
+    } finally {
       setIsBotTyping(false);
-    }, 850);
+    }
   };
 
   return (
