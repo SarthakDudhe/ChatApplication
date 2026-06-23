@@ -2,14 +2,14 @@
 
   <!-- Animated Hero Visual Banner Placeholder -->
   <a href="#-interface-preview">
-    <img width="100%"  alt="Screenshot 2026-06-23 141150" src="https://github.com/user-attachments/assets/b7144b97-618a-4484-8dfe-60c1fc171074" />
+    <img src="https://github.com/user-attachments/assets/b7144b97-618a-4484-8dfe-60c1fc171074" alt="Dialogue Enterprise Banner" width="100%" style="border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.12); border: 1px solid rgba(0,0,0,0.05);" />
   </a>
 
   <br />
   <br />
 
   <!-- Logo -->
-  <img width="240" alt="Dialogue Logo" src="https://github.com/user-attachments/assets/364da12b-e7be-4f91-af80-fb0ed924eb07" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);" />
+  <img src="https://github.com/user-attachments/assets/364da12b-e7be-4f91-af80-fb0ed924eb07" alt="Dialogue Logo" width="240" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.05);" />
 
   <h1>⚡ Dialogue — Enterprise Real-Time Chat Infrastructure</h1>
 
@@ -86,24 +86,30 @@ Modern organizations face a trilemma when implementing user messaging:
 ## 📸 Interface Preview
 
 <div align="center">
-
-  <img width="85%"  alt="Screenshot 2026-06-23 141211" src="https://github.com/user-attachments/assets/e6d0fa56-7f50-45dc-97c3-274a23f9bc08" />
+  <img src="https://github.com/user-attachments/assets/e6d0fa56-7f50-45dc-97c3-274a23f9bc08" alt="Dialogue Workspace Interface" width="90%" style="border-radius: 12px; border: 1px solid #E8E8E2; box-shadow: 0 8px 32px rgba(0,0,0,0.08);" />
 </div>
 
-### 🎨 Visual & Interactive Placeholders
+---
 
-For developers and contributors looking to expand the visual assets of this repository, insert media links into the placeholders below:
+## 🎥 Feature Gallery & Core Workflows
 
- <img width="800" height="500" alt="Screenshot 2026-06-23 141150" src="https://github.com/user-attachments/assets/a206fb8a-89bb-48ff-99ca-75aacf64bb1e" />
-  * *Description*: Screen showing the dynamic two-step onboarding workflow, credentials submission, and the profile photo edit trigger with Cloudinary image updates.
-* **[PLACEHOLDER] Group Management Operations Demonstration**
- <img width="1000" height="600" alt="Screenshot 2026-06-23 141355" src="https://github.com/user-attachments/assets/fe50838d-7615-4dfb-a144-7c0a24cdd762" />
+### 🔐 User Onboarding & Secure Authentication
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/a206fb8a-89bb-48ff-99ca-75aacf64bb1e" alt="Dialogue User Onboarding Flow" width="90%" style="max-width: 800px; border-radius: 12px; border: 1px solid #E8E8E2; box-shadow: 0 8px 30px rgba(0,0,0,0.06);" />
+  <p><i>Figure 2: Two-step credentials validation and user profile customization with local canvas compression.</i></p>
+</div>
 
-  * *Description*: Demonstrates an admin creating a group, selecting contacts, updating group avatars with client-side compression, adding new members, and removing members.
-* **[PLACEHOLDER] Llama 4 AI Chatbot Streaming Capture**
-  <img width="402" height="700" alt="Screenshot 2026-06-23 141238" src="https://github.com/user-attachments/assets/e0373f77-89f5-4670-82b3-64b440329a7a" />
+### 👥 Enterprise Group Administration
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/fe50838d-7615-4dfb-a144-7c0a24cdd762" alt="Dialogue Group Administration Controls" width="90%" style="max-width: 800px; border-radius: 12px; border: 1px solid #E8E8E2; box-shadow: 0 8px 30px rgba(0,0,0,0.06);" />
+  <p><i>Figure 3: Workspace administration panel detailing real-time participant listings and membership controls.</i></p>
+</div>
 
-  * *Description*: Mobile-view capture showing the Dialogue Bot slide-out panel, clicking starter chips, and Llama 4 streaming chunked text in real-time.
+### 🤖 Dialogue Bot (Llama-4 Chat Stream)
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/e0373f77-89f5-4670-82b3-64b440329a7a" alt="Dialogue Bot Llama 4 Stream" width="50%" style="max-width: 320px; border-radius: 16px; border: 4px solid #1C2B3A; box-shadow: 0 10px 40px rgba(28,43,58,0.12);" />
+  <p><i>Figure 4: Slide-out AI assistant interface supporting tokens stream rendering and quick starter chips.</i></p>
+</div>
 
 ---
 
