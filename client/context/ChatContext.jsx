@@ -165,6 +165,23 @@ const updateGroupInfo = async (conversationId, groupName, groupAvatar) => {
     }
 };
 
+const deleteGroup = async (conversationId) => {
+    try {
+        const { data } = await axios.delete("/api/conversations/delete", { data: { conversationId } });
+        if (data.success) {
+            setConversations(prev => prev.filter(c => c._id !== conversationId));
+            if (selectedUser && selectedUser._id === conversationId) {
+                setSelectedUser(null);
+            }
+            toast.success("Group deleted successfully!");
+        } else {
+            toast.error(data.message);
+        }
+    } catch (error) {
+        toast.error(error.message);
+    }
+};
+
 //function to search messages
 const searchMessages = async (query) => {
     setSearchQuery(query);
@@ -505,6 +522,7 @@ const value ={
     addGroupMembers,
     removeGroupMember,
     updateGroupInfo,
+    deleteGroup,
     setMessages,
     sendMessage,
     getMessages,

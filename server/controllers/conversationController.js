@@ -184,3 +184,34 @@ export const updateGroupInfo = async (req, res) => {
         res.json({ success: false, message: error.message });
     }
 };
+
+// Delete group entirely (admin only)
+export const deleteGroup = async (req, res) => {
+    try {
+        const { conversationId } = req.body;
+        const userId = req.user._id;
+
+        if (!conversationId) {
+            return res.json({ success: false, message: "Invalid parameters" });
+        }
+
+        const group = await Conversation.findById(conversationId);
+        if (!group) {
+            return res.json({ success: false, message: "Group not found" });
+        }
+
+        if (!group.isGroup) {
+            return res.json({ success: false, message: "This is not a group conversation" });
+        }
+
+        if (group.admin.toString() !== userId.toString()) {
+            return res.json({ success: false, message: "Only the group admin can delete the group" });
+        }
+
+        await Conversation.findByIdAndDelete(conversationId);
+        res.json({ success: true, message: "Group deleted successfully" });
+    } catch (error) {
+        console.error(error.message);
+        res.json({ success: false, message: error.message });
+    }
+};
