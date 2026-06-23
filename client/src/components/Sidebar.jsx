@@ -174,7 +174,10 @@ const Sidebar = () => {
                         {/* Settings Dropdown Menu */}
                         <div className='absolute top-full right-0 z-20 w-52 p-4 rounded-xl bg-[#1A1A1A] border border-white/10 text-[#FAFAFA] hidden group-hover:block shadow-2xl backdrop-blur-xl animate-fade-in'>
                           <p onClick={()=>navigate('/profile')} className='cursor-pointer text-sm hover:text-[#2D4A6B] transition-colors font-medium flex items-center gap-2'>
-                            👤 Edit Profile
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            </svg>
+                            Edit Profile
                           </p>
                           <hr className='my-2.5 border-t border-white/10'/>
                           
@@ -206,7 +209,10 @@ const Sidebar = () => {
                           </div>
                           <hr className='my-2.5 border-t border-white/10'/>
                           <p className='cursor-pointer text-sm text-red-400 hover:text-red-350 transition-colors font-medium flex items-center gap-2' onClick={()=>logout()}>
-                            🚪 Logout
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                            </svg>
+                            Logout
                           </p>
                         </div>
                     </div>
@@ -215,7 +221,9 @@ const Sidebar = () => {
 
          {/* Premium Search Container */}
          <div className='bg-white/5 border border-white/10 rounded-xl flex items-center gap-3 py-2.5 px-4 mt-4 transition-all focus-within:border-[#2D4A6B]/50 focus-within:ring-1 focus-within:ring-[#2D4A6B]/50'>
-          <img src={assets.search_icon} alt="Search" className='w-3.5 opacity-40 invert'/>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.8" stroke="currentColor" className="w-4 h-4 text-[#9CA3AF]">
+            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.602 10.602Z" />
+          </svg>
           <input 
             type="text" 
             value={input}
@@ -232,7 +240,12 @@ const Sidebar = () => {
         {filteredGroups.length > 0 && (
           <div>
             <p className='text-[10px] text-[#9CA3AF] font-bold uppercase tracking-widest px-2 mb-2 flex justify-between items-center'>
-              <span>👥 Groups</span>
+              <span className='flex items-center gap-1.5'>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3.5 h-3.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+                </svg>
+                Groups
+              </span>
               <span className='bg-white/5 text-[#9CA3AF] text-[9px] px-1.5 py-0.5 rounded font-mono'>{filteredGroups.length}</span>
             </p>
             <div className='flex flex-col gap-1.5'>
@@ -268,7 +281,7 @@ const Sidebar = () => {
                         }}
                       />
                     </div>
-                    <div className='flex flex-col leading-tight flex-1 min-w-0'>
+                    <div className='flex flex-col leading-tight flex-1 min-w-0 text-left'>
                       <p className='font-semibold text-sm text-[#FAFAFA] truncate'>{group.groupName}</p>
                       {isTyping ? (
                         <span className='text-[#2D4A6B] text-[10px] font-medium mt-0.5 animate-pulse'>{typingText}</span>
@@ -293,7 +306,12 @@ const Sidebar = () => {
         {/* Contacts Column */}
         <div>
           <p className='text-[10px] text-[#9CA3AF] font-bold uppercase tracking-widest px-2 mb-2 flex justify-between items-center'>
-            <span>👤 Direct Messages</span>
+            <span className='flex items-center gap-1.5'>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3.5 h-3.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+              </svg>
+              Direct Messages
+            </span>
             <span className='bg-white/5 text-[#9CA3AF] text-[9px] px-1.5 py-0.5 rounded font-mono'>{filteredUsers.length}</span>
           </p>
           <div className='flex flex-col gap-1.5'>
@@ -327,7 +345,7 @@ const Sidebar = () => {
                       <span className='absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-[#1A1A1A] animate-pulse'></span>
                     )}
                   </div>
-                  <div className='flex flex-col leading-tight flex-1 min-w-0'>
+                  <div className='flex flex-col leading-tight flex-1 min-w-0 text-left'>
                     <p className='font-semibold text-sm text-[#FAFAFA] truncate'>{user.fullname}</p>
                     {typingUsers[user._id] ? (
                       <span className='text-[#2D4A6B] text-[10px] font-medium mt-0.5 animate-pulse'>typing...</span>
@@ -370,7 +388,7 @@ const Sidebar = () => {
                       </span>
                       <span>{formatMessageTime(msg.createdAt)}</span>
                     </div>
-                    <p className='text-xs text-gray-350 line-clamp-2 leading-relaxed'>
+                    <p className='text-xs text-gray-350 line-clamp-2 leading-relaxed text-left'>
                       {highlightText(msg.text, input)}
                     </p>
                   </div>
@@ -391,7 +409,7 @@ const Sidebar = () => {
             </div>
 
             <div className="flex flex-col gap-3">
-              <label className="text-xs text-[#9CA3AF] font-semibold uppercase tracking-wider">Group Details</label>
+              <label className="text-xs text-[#9CA3AF] font-semibold uppercase tracking-wider text-left">Group Details</label>
               
               <div className="flex items-center gap-4">
                 <div className="relative flex-shrink-0">
@@ -400,8 +418,11 @@ const Sidebar = () => {
                     alt="Group Avatar" 
                     className="w-14 h-14 rounded-full object-cover border border-white/20 shadow-md"
                   />
-                  <label htmlFor="group-avatar-input" className="absolute bottom-0 right-0 bg-[#1C2B3A] hover:bg-[#253545] text-white rounded-full p-1 cursor-pointer text-[10px] shadow-md transition-colors border border-white/20">
-                    📸
+                  <label htmlFor="group-avatar-input" className="absolute bottom-0 right-0 bg-[#1C2B3A] hover:bg-[#253545] text-white rounded-full p-1.5 cursor-pointer shadow-md transition-colors border border-white/20 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3.5 h-3.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.5 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+                    </svg>
                     <input 
                       type="file" 
                       id="group-avatar-input" 
@@ -432,7 +453,7 @@ const Sidebar = () => {
                 </div>
               </div>
 
-              <label className="text-xs text-[#9CA3AF] font-semibold uppercase tracking-wider mt-2">Select Members (Min 2)</label>
+              <label className="text-xs text-[#9CA3AF] font-semibold uppercase tracking-wider mt-2 text-left">Select Members (Min 2)</label>
               <div className="max-h-48 overflow-y-auto border border-white/10 rounded-xl bg-white/3 p-2 flex flex-col gap-1.5">
                 {users.map((user) => (
                   <label key={user._id} className="flex items-center justify-between p-2 rounded-lg hover:bg-white/5 cursor-pointer transition-colors">
@@ -521,7 +542,7 @@ const Sidebar = () => {
                 }}
                 className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold transition-colors text-[#FAFAFA] flex items-center gap-1.5 hover:text-[#2D4A6B]"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-[#2D4A6B]">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 text-[#2D4A6B]">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                 </svg>
                 Save Image

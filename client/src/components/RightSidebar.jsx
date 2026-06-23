@@ -42,7 +42,12 @@ const RightSidebar = () => {
       {/* Shared Media gallery */}
       <div className='flex-1 flex flex-col min-h-0'>
         <p className='text-[10px] text-[#6B7280] font-bold uppercase tracking-widest mb-3 flex justify-between items-center flex-shrink-0'>
-          <span>Shared Media</span>
+          <span className='flex items-center gap-1.5'>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.8" stroke="currentColor" className="w-3.5 h-3.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+            </svg>
+            Shared Media
+          </span>
           <span className='bg-[#1C2B3A]/10 text-[#1C2B3A] text-[9px] px-1.5 py-0.5 rounded font-mono'>{msgImages.length}</span>
         </p>
         
@@ -70,8 +75,11 @@ const RightSidebar = () => {
       <div className='pt-6 border-t border-[#E8E8E2] w-full flex justify-center flex-shrink-0'>
         <button 
           onClick={()=>logout()} 
-          className='w-full py-2.5 rounded-xl border border-red-200 hover:border-red-300 text-red-600 bg-red-50 hover:bg-red-100 text-xs font-semibold transition-all duration-200 cursor-pointer text-center'
+          className='w-full py-2.5 rounded-xl border border-red-200 hover:border-red-300 text-red-600 bg-red-50 hover:bg-red-100 text-xs font-semibold transition-all duration-200 cursor-pointer text-center flex items-center justify-center gap-1.5'
         >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.8" stroke="currentColor" className="w-3.5 h-3.5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+          </svg>
           Log Out Account
         </button>
       </div>

@@ -250,11 +250,13 @@ const ChatContainer = () => {
           </div>
         </div>
         <div className='flex items-center gap-3'>
-          <button onClick={()=>setSelectedUser(null)} className='md:hidden p-2 rounded-lg hover:bg-black/5 text-[#6B7280] hover:text-[#1A1A1A] transition-all'>
-            <img src={assets.arrow_icon} className='max-w-5 opacity-80 filter invert' />
+          <button onClick={()=>setSelectedUser(null)} className='md:hidden p-2 rounded-lg hover:bg-black/5 text-[#6B7280] hover:text-[#1A1A1A] transition-all flex items-center justify-center' title='Back'>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
           </button>
           {selectedUser.isGroup && (
-            <button onClick={() => setIsGroupInfoOpen(true)} className='p-2 rounded-lg hover:bg-black/5 text-[#6B7280] hover:text-[#1A1A1A] transition-all' title='Group Details'>
+            <button onClick={() => setIsGroupInfoOpen(true)} className='p-2 rounded-lg hover:bg-black/5 text-[#6B7280] hover:text-[#1A1A1A] transition-all flex items-center justify-center' title='Group Details'>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 111.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
               </svg>
@@ -292,11 +294,26 @@ const ChatContainer = () => {
                     ))}
                   </div>
                   <div className='h-3 w-[1px] bg-[#E8E8E2] mx-1'></div>
-                  <button onClick={()=>setReplyingTo(msg)} className='p-1 rounded text-[#6B7280] hover:text-[#1A1A1A] hover:bg-[#F5F5F0] text-[10px] transition-colors cursor-pointer' title='Reply'>Reply ↩️</button>
+                  <button onClick={()=>setReplyingTo(msg)} className='p-1 rounded text-[#6B7280] hover:text-[#1A1A1A] hover:bg-[#F5F5F0] text-[10px] transition-colors cursor-pointer flex items-center gap-1' title='Reply'>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3 h-3">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+                    </svg>
+                    Reply
+                  </button>
                   {isSentByMe && (
                     <>
-                      <button onClick={()=>handleStartEdit(msg)} className='p-1 rounded text-[#6B7280] hover:text-[#1C2B3A] hover:bg-[#F5F5F0] text-[10px] transition-colors cursor-pointer' title='Edit'>Edit ✏️</button>
-                      <button onClick={()=>handleDelete(msg._id)} className='p-1 rounded text-[#6B7280] hover:text-red-500 hover:bg-[#F5F5F0] text-[10px] transition-colors cursor-pointer' title='Delete'>Delete 🗑️</button>
+                      <button onClick={()=>handleStartEdit(msg)} className='p-1 rounded text-[#6B7280] hover:text-[#1C2B3A] hover:bg-[#F5F5F0] text-[10px] transition-colors cursor-pointer flex items-center gap-1' title='Edit'>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3.5 h-3.5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.83 20.013a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                        </svg>
+                        Edit
+                      </button>
+                      <button onClick={()=>handleDelete(msg._id)} className='p-1 rounded text-[#6B7280] hover:text-red-500 hover:bg-[#F5F5F0] text-[10px] transition-colors cursor-pointer flex items-center gap-1' title='Delete'>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3.5 h-3.5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                        </svg>
+                        Delete
+                      </button>
                     </>
                   )}
                 </div>
@@ -315,8 +332,11 @@ const ChatContainer = () => {
 
                   {/* Deleted message bubble */}
                   {msg.deleted ? (
-                    <p className={`p-3 text-xs italic bg-[#FAFAFA] border border-[#E8E8E2] text-[#9CA3AF] rounded-xl ${isSentByMe ? 'rounded-tr-none' : 'rounded-tl-none'}`}>
-                      🚫 This message was deleted
+                    <p className={`p-3 text-xs italic bg-[#FAFAFA] border border-[#E8E8E2] text-[#9CA3AF] rounded-xl flex items-center gap-1.5 ${isSentByMe ? 'rounded-tr-none' : 'rounded-tl-none'}`}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 text-neutral-400">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
+                      </svg>
+                      This message was deleted
                     </p>
                   ) : editingMsg===msg._id ? (
                     <div className='flex flex-col gap-1.5 min-w-[200px]'>
@@ -335,7 +355,7 @@ const ChatContainer = () => {
                   ) : msg.image ? (
                     <div className='relative'>
                       {msg.replyTo && !msg.replyTo.deleted && (
-                        <div className='bg-white/80 border-l-2 border-[#1C2B3A] rounded-lg px-2.5 py-1.5 mb-1.5 text-xs text-[#6B7280] max-w-[230px] backdrop-blur-md border border-[#E8E8E2]'>
+                        <div className='bg-white/80 border-l-2 border-[#1C2B3A] rounded-lg px-2.5 py-1.5 mb-1.5 text-xs text-[#6B7280] max-w-[230px] backdrop-blur-md border border-[#E8E8E2] text-left'>
                           <p className='text-[#1C2B3A] text-[10px] font-semibold mb-0.5'>{getSenderName(msg.replyTo.senderId)}</p>
                           {msg.replyTo.image ? <span>🖼️ Photo</span> : <span className='line-clamp-1'>{msg.replyTo.text}</span>}
                         </div>
@@ -357,12 +377,12 @@ const ChatContainer = () => {
                   ) : (
                     <div className='relative group/bubble'>
                       {msg.replyTo && !msg.replyTo.deleted && (
-                        <div className='bg-[#FAFAFA] border-l-2 border-[#1C2B3A] rounded-lg px-2.5 py-1.5 mb-1.5 text-xs text-[#6B7280] max-w-[280px] md:max-w-[320px] border border-[#E8E8E2]'>
+                        <div className='bg-[#FAFAFA] border-l-2 border-[#1C2B3A] rounded-lg px-2.5 py-1.5 mb-1.5 text-xs text-[#6B7280] max-w-[280px] md:max-w-[320px] border border-[#E8E8E2] text-left'>
                           <p className='text-[#1C2B3A] text-[10px] font-bold mb-0.5'>{getSenderName(msg.replyTo.senderId)}</p>
                           {msg.replyTo.image ? <span>🖼️ Photo</span> : <span className='line-clamp-1 text-[11px]'>{msg.replyTo.text}</span>}
                         </div>
                       )}
-                      <p className={`p-3 px-4 text-[13px] leading-relaxed rounded-2xl shadow-sm break-words border transition-all ${isSentByMe ? 'bg-[#1C2B3A] border-transparent text-white rounded-tr-none' : 'bg-white border-[#E8E8E2] text-[#1A1A1A] rounded-tl-none'}`}>
+                      <p className={`p-3 px-4 text-[13px] leading-relaxed rounded-2xl shadow-sm break-words border text-left transition-all ${isSentByMe ? 'bg-[#1C2B3A] border-transparent text-white rounded-tr-none' : 'bg-white border-[#E8E8E2] text-[#1A1A1A] rounded-tl-none'}`}>
                         {msg.text}
                         {msg.editedAt && <span className={`text-[9px] italic ml-1.5 ${isSentByMe ? 'text-white/70' : 'text-neutral-400'}`}>(edited)</span>}
                       </p>
@@ -418,9 +438,14 @@ const ChatContainer = () => {
         {/* Reply Preview */}
         {replyingTo && (
           <div className='flex items-center justify-between bg-white border border-[#E8E8E2] border-l-2 border-l-[#1C2B3A] rounded-xl px-4 py-2 mb-3 text-sm text-[#1A1A1A] backdrop-blur-md max-w-5xl mx-auto'>
-            <div className='flex-1 min-w-0 text-left'>
-              <p className='text-[#1C2B3A] text-xs font-bold'>Replying to {getSenderName(replyingTo.senderId)}</p>
-              <p className='truncate text-xs mt-0.5 text-[#6B7280]'>{replyingTo.image ? '🖼️ Photo' : replyingTo.text}</p>
+            <div className='flex-1 min-w-0 text-left flex items-center gap-2'>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 text-[#1C2B3A]">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+              </svg>
+              <div>
+                <p className='text-[#1C2B3A] text-xs font-bold'>Replying to {getSenderName(replyingTo.senderId)}</p>
+                <p className='truncate text-xs mt-0.5 text-[#6B7280]'>{replyingTo.image ? '🖼️ Photo' : replyingTo.text}</p>
+              </div>
             </div>
             <button onClick={()=>setReplyingTo(null)} className='text-[#6B7280] hover:text-[#1A1A1A] ml-2 text-md cursor-pointer p-1'>✕</button>
           </div>
@@ -443,7 +468,11 @@ const ChatContainer = () => {
 
         <div className='flex items-center gap-3.5 max-w-5xl mx-auto'>
           <div className='flex-1 flex items-center bg-white border border-[#E8E8E2] px-4.5 rounded-xl transition-all focus-within:border-[#1C2B3A] focus-within:ring-1 focus-within:ring-[#1C2B3A]'>
-            <button onClick={()=>setShowEmojiPicker(prev=>!prev)} className='text-lg cursor-pointer mr-3 opacity-70 hover:opacity-100 hover:scale-105 transition-all' title='Emoji'>😊</button>
+            <button onClick={()=>setShowEmojiPicker(prev=>!prev)} className='cursor-pointer mr-3 opacity-70 hover:opacity-100 hover:scale-105 transition-all p-1 flex items-center justify-center' title='Emoji'>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 text-[#6B7280]">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z" />
+              </svg>
+            </button>
             <input 
               onChange={handleInputChange} 
               value={input} 
@@ -453,15 +482,19 @@ const ChatContainer = () => {
               className='flex-1 text-sm py-3 bg-transparent border-none outline-none text-[#1A1A1A] placeholder-[#9CA3AF]'
             />
             <input type="file" onChange={handleSendImage} id='image' accept='image/png, image/jpeg' hidden/>
-            <label htmlFor="image" className='cursor-pointer opacity-70 hover:opacity-100 hover:scale-105 transition-all p-1'>
-              <img src={assets.gallery_icon} alt="" className='w-5 filter invert opacity-80' />
+            <label htmlFor="image" className='cursor-pointer opacity-70 hover:opacity-100 hover:scale-105 transition-all p-1 flex items-center justify-center'>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 text-[#6B7280]">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+              </svg>
             </label>
           </div>
           <button 
             onClick={handlesendMessage} 
             className='w-11 h-11 rounded-xl bg-[#1C2B3A] hover:bg-[#253545] flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all flex-shrink-0'
           >
-            <img src={assets.send_button} alt="" className='w-4 ml-0.5' />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 text-white">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+            </svg>
           </button>
         </div>
       </div>
@@ -485,8 +518,11 @@ const ChatContainer = () => {
                     className="w-20 h-20 rounded-full object-cover border border-[#E8E8E2] shadow-lg"
                   />
                   {isAdmin && (
-                    <label htmlFor="edit-group-avatar" className="absolute bottom-0 right-0 bg-[#1C2B3A] text-white rounded-full p-1.5 cursor-pointer text-xs shadow-md transition-colors border border-white/20">
-                      📸
+                    <label htmlFor="edit-group-avatar" className="absolute bottom-0 right-0 bg-[#1C2B3A] text-white rounded-full p-1.5 cursor-pointer shadow-md transition-colors border border-white/20 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3.5 h-3.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.5 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+                      </svg>
                       <input 
                         type="file" 
                         id="edit-group-avatar" 
@@ -536,9 +572,12 @@ const ChatContainer = () => {
                   {isAdmin && (
                     <button 
                       onClick={() => setIsAddMembersOpen(true)}
-                      className="text-[#1C2B3A] hover:text-[#253545] font-bold transition-colors cursor-pointer text-[11px]"
+                      className="text-[#1C2B3A] hover:text-[#253545] font-bold transition-colors cursor-pointer text-[11px] flex items-center gap-1"
                     >
-                      ➕ Add Members
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3.5 h-3.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.647-6.374-1.766Z" />
+                      </svg>
+                      Add Members
                     </button>
                   )}
                 </div>
@@ -576,8 +615,11 @@ const ChatContainer = () => {
                   removeGroupMember(selectedUser._id, authUser?._id);
                   setIsGroupInfoOpen(false);
                 }}
-                className="px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 text-sm font-semibold transition-colors animate-pulse"
+                className="px-4 py-2 rounded-xl bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 text-sm font-semibold transition-colors flex items-center justify-center gap-1"
               >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3.5 h-3.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                </svg>
                 Leave Group
               </button>
               <button 
