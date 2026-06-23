@@ -9,9 +9,9 @@
   <br />
 
   <!-- Logo -->
-  <img src="client/src/assets/logo_big.png" alt="Dialogue Logo" width="240" style="filter: invert(1) hue-rotate(180deg) brightness(1.6) contrast(1.2); drop-shadow: 0 4px 24px rgba(28,43,58,0.25);" />
+  <img width="240" alt="QuickChat Logo" src="https://github.com/user-attachments/assets/364da12b-e7be-4f91-af80-fb0ed924eb07" style="border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);" />
 
-  <h1>⚡ Dialogue — Enterprise Real-Time Chat Infrastructure</h1>
+  <h1>⚡ QuickChat — Enterprise Real-Time Chat Infrastructure</h1>
 
   <p>
     <b>A zero-trust, high-performance messaging platform featuring Client-Side AES-256 End-to-End Encryption (E2EE), WebSocket-driven room concurrency, Llama-4 AI assistant stream integrations, and a premium Smoke White & Ink Blue enterprise interface.</b>
@@ -625,7 +625,7 @@ Distributed under the **ISC License**. See the `server/package.json` and `client
 ---
 
 <div align="center">
-  <img src="client/src/assets/logo_icon.png" alt="Dialogue Icon" width="60" />
+  <img width="100" alt="ChatGPT Image Jun 23, 2026, 01_37_53 PM" src="https://github.com/user-attachments/assets/a767a13e-ef2e-429f-96cf-9f55790067d2" style="margin-bottom: 10px;" />
   <br/>
   <br/>
   <b>Developed by <a href="https://github.com/SarthakDudhe">Sarthak Dudhe</a></b>
