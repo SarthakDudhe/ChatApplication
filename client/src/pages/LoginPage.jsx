@@ -34,21 +34,8 @@ const LoginPage = () => {
           style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
 
         <div className='relative z-10 flex flex-col items-center gap-6 text-center px-10'>
-          {/* Logo */}
-          <div className='w-20 h-20 rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden'
-            style={{ backgroundColor: '#1C2B3A', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <img src={assets.logo_icon} alt="Dialogue" className='w-12 h-12 object-contain' />
-          </div>
-
-          {/* Brand name */}
-          <div className='flex flex-col gap-2'>
-            <h1 className='text-4xl font-bold tracking-tight' style={{ fontFamily: "'Outfit', sans-serif", color: '#FAFAFA' }}>
-              Dialogue
-            </h1>
-            <p className='text-base font-medium' style={{ color: 'rgba(250,250,250,0.5)' }}>
-              Enterprise Messaging. Redefined.
-            </p>
-          </div>
+          {/* Logo Image */}
+          <img src={assets.logo_icon} alt="Dialogue" className='w-56 object-contain drop-shadow-2xl' />
 
           {/* Features list */}
           <div className='flex flex-col gap-3 mt-4 w-full max-w-xs'>
