@@ -71,12 +71,31 @@ const Sidebar = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [input]);
 
-  // Scroll chatbot to bottom
+  // Scroll chatbot to bottom when first opened
+  useEffect(() => {
+    if (isChatbotOpen && chatbotScrollEndRef.current) {
+      setTimeout(() => {
+        if (chatbotScrollEndRef.current) {
+          chatbotScrollEndRef.current.scrollIntoView({ behavior: "auto" });
+        }
+      }, 50);
+    }
+  }, [isChatbotOpen]);
+
+  // Scroll chatbot to bottom during messages/typing updates
   useEffect(() => {
     if (chatbotScrollEndRef.current && isChatbotOpen) {
-      chatbotScrollEndRef.current.scrollIntoView({ behavior: isBotTyping ? "auto" : "smooth" });
+      const container = chatbotScrollEndRef.current.parentElement;
+      if (container) {
+        const isUserLastMessage = chatbotMessages[chatbotMessages.length - 1]?.sender === 'user';
+        const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 150;
+
+        if (isUserLastMessage || isNearBottom) {
+          chatbotScrollEndRef.current.scrollIntoView({ behavior: isBotTyping ? "auto" : "smooth" });
+        }
+      }
     }
-  }, [chatbotMessages, isBotTyping, isChatbotOpen]);
+  }, [chatbotMessages, isBotTyping]);
 
   // Load chatbot messages from local storage when authenticated user changes
   useEffect(() => {
