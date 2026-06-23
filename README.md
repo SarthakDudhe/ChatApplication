@@ -567,7 +567,7 @@ Distributed under the **ISC License**. See the `server/package.json` and `client
 ---
 
 <div align="center">
-  <img src="client/src/assets/logo_icon.png" alt="QuickChat Icon" width="60" />
+ 
   <img width="100"  alt="ChatGPT Image Jun 23, 2026, 01_37_53 PM" src="https://github.com/user-attachments/assets/a767a13e-ef2e-429f-96cf-9f55790067d2" />
 
   <br/>
