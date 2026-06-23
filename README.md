@@ -2,7 +2,7 @@
 
   <!-- Animated Hero Visual Banner Placeholder -->
   <a href="#-interface-preview">
-    <img src="https://github.com/user-attachments/assets/12353fc9-cb7d-4312-93f4-f7384e2a3e13" alt="Dialogue Enterprise Banner" width="100%" style="border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15);" />
+    <img width="100%"  alt="Screenshot 2026-06-23 141150" src="https://github.com/user-attachments/assets/b7144b97-618a-4484-8dfe-60c1fc171074" />
   </a>
 
   <br />
