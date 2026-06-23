@@ -78,6 +78,36 @@ const Sidebar = () => {
     }
   }, [chatbotMessages, isBotTyping, isChatbotOpen]);
 
+  // Load chatbot messages from local storage when authenticated user changes
+  useEffect(() => {
+    if (authUser?._id) {
+      const stored = localStorage.getItem("quickbot_chat_" + authUser._id);
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          const formatted = parsed.map(m => ({
+            ...m,
+            time: new Date(m.time)
+          }));
+          setChatbotMessages(formatted);
+        } catch (e) {
+          console.error("Error parsing stored chatbot history:", e);
+        }
+      } else {
+        setChatbotMessages([
+          { sender: 'bot', text: "Hello! I am QuickBot, your virtual assistant. Ask me anything about QuickChat encryption, WebSockets, or group settings!", time: new Date() }
+        ]);
+      }
+    }
+  }, [authUser]);
+
+  // Sync chatbot messages to local storage
+  useEffect(() => {
+    if (authUser?._id && chatbotMessages.length > 0) {
+      localStorage.setItem("quickbot_chat_" + authUser._id, JSON.stringify(chatbotMessages));
+    }
+  }, [chatbotMessages, authUser]);
+
   const handleSelectMessageResult = (msg) => {
     if (!authUser) return;
     
@@ -144,32 +174,87 @@ const Sidebar = () => {
     }
   };
 
-  // Chatbot submit logic
-  const handleChatbotSubmit = async (e) => {
-    e.preventDefault();
-    if (!chatbotInput.trim()) return;
-
-    const userQuery = chatbotInput.trim();
-    const newUserMessage = { sender: 'user', text: userQuery, time: new Date() };
+  // Chatbot submit logic and streaming helper
+  const submitChatbotQuery = async (queryText) => {
+    if (!authUser?._id) return;
+    const newUserMessage = { sender: 'user', text: queryText, time: new Date() };
     const updatedMessages = [...chatbotMessages, newUserMessage];
     setChatbotMessages(updatedMessages);
-    setChatbotInput("");
     setIsBotTyping(true);
 
+    const botPlaceholderIndex = updatedMessages.length;
+    // Pre-insert bot message with empty text
+    setChatbotMessages(prev => [
+      ...prev,
+      { sender: 'bot', text: "", time: new Date() }
+    ]);
+
     try {
-      const { data } = await axios.post("/api/auth/chatbot", { messages: updatedMessages });
-      if (data.success) {
-        setChatbotMessages(prev => [...prev, { sender: 'bot', text: data.text, time: new Date() }]);
-      } else {
-        toast.error(data.message || "Failed to get AI response");
-        setChatbotMessages(prev => [...prev, { sender: 'bot', text: "Sorry, I ran into an error connecting to Groq AI: " + data.message, time: new Date() }]);
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || ""}/api/auth/chatbot`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "token": localStorage.getItem("token") || ""
+        },
+        body: JSON.stringify({ messages: updatedMessages })
+      });
+
+      if (!response.ok) {
+        const errJson = await response.json().catch(() => ({}));
+        throw new Error(errJson.message || "Failed to initialize stream");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let botResponseText = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        botResponseText += chunk;
+
+        setChatbotMessages(prev => {
+          const newMsgs = [...prev];
+          if (newMsgs.length > botPlaceholderIndex) {
+            newMsgs[botPlaceholderIndex] = {
+              ...newMsgs[botPlaceholderIndex],
+              text: botResponseText
+            };
+          }
+          return newMsgs;
+        });
       }
     } catch (error) {
-      console.error(error);
-      setChatbotMessages(prev => [...prev, { sender: 'bot', text: "Error communicating with chatbot service.", time: new Date() }]);
+      console.error("QuickBot streaming error:", error);
+      toast.error(error.message || "Error communicating with chatbot service.");
+      setChatbotMessages(prev => {
+        const newMsgs = [...prev];
+        if (newMsgs.length > botPlaceholderIndex) {
+          newMsgs[botPlaceholderIndex] = {
+            ...newMsgs[botPlaceholderIndex],
+            text: "Sorry, I ran into an error connecting to Groq AI: " + error.message
+          };
+        }
+        return newMsgs;
+      });
     } finally {
       setIsBotTyping(false);
     }
+  };
+
+  const handleChatbotSubmit = async (e) => {
+    e.preventDefault();
+    if (!chatbotInput.trim() || isBotTyping) return;
+    const query = chatbotInput.trim();
+    setChatbotInput("");
+    await submitChatbotQuery(query);
+  };
+
+  const handleSelectStarterChip = async (chipText) => {
+    if (isBotTyping) return;
+    await submitChatbotQuery(chipText);
   };
 
   return (
@@ -471,15 +556,41 @@ const Sidebar = () => {
 
           {/* Bot Messages Feed */}
           <div className="flex-1 overflow-y-auto p-3 bg-[#F5F5F0] flex flex-col gap-2.5 max-h-[220px] min-h-[160px] text-xs sidebar-scroll">
-            {chatbotMessages.map((msg, i) => (
-              <div key={i} className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
-                <div className={`p-2 px-3 rounded-xl max-w-[85%] text-left leading-relaxed ${msg.sender === 'user' ? 'bg-[#1C2B3A] text-white rounded-tr-none' : 'bg-white border border-[#E8E8E2] text-[#1A1A1A] rounded-tl-none shadow-sm'}`}>
-                  {msg.text}
+            {chatbotMessages.map((msg, i) => {
+              if (msg.sender === 'bot' && !msg.text) return null;
+              return (
+                <div key={i} className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
+                  <div className={`p-2 px-3 rounded-xl max-w-[85%] text-left leading-relaxed ${msg.sender === 'user' ? 'bg-[#1C2B3A] text-white rounded-tr-none' : 'bg-white border border-[#E8E8E2] text-[#1A1A1A] rounded-tl-none shadow-sm'}`}>
+                    {msg.text}
+                  </div>
+                  <span className="text-[8px] text-[#9CA3AF] mt-0.5 px-1">
+                    {new Date(msg.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
                 </div>
-                <span className="text-[8px] text-[#9CA3AF] mt-0.5 px-1">{msg.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              );
+            })}
+            {chatbotMessages.length === 1 && !isBotTyping && (
+              <div className="flex flex-col gap-1.5 mt-1 px-1">
+                <p className="text-[10px] text-[#9CA3AF] font-bold uppercase tracking-widest text-left">Suggested Questions</p>
+                <div className="flex flex-col gap-1 text-left">
+                  {[
+                    "🔒 How does E2EE work?",
+                    "👥 What are group roles?",
+                    "⚡ Tell me about WebSockets"
+                  ].map((chip) => (
+                    <button
+                      key={chip}
+                      type="button"
+                      onClick={() => handleSelectStarterChip(chip)}
+                      className="bg-white border border-[#E8E8E2] hover:border-[#1C2B3A]/50 text-[#1A1A1A] hover:bg-gray-50 text-[10px] py-1 px-2.5 rounded-xl shadow-sm transition-all duration-150 active:scale-95 text-left font-medium"
+                    >
+                      {chip}
+                    </button>
+                  ))}
+                </div>
               </div>
-            ))}
-            {isBotTyping && (
+            )}
+            {isBotTyping && chatbotMessages[chatbotMessages.length - 1]?.sender === 'bot' && !chatbotMessages[chatbotMessages.length - 1]?.text && (
               <div className="flex flex-col items-start">
                 <div className="p-2.5 px-3.5 rounded-xl rounded-tl-none bg-white border border-[#E8E8E2] shadow-sm">
                   <div className="flex items-center gap-1">
