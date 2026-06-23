@@ -842,26 +842,7 @@ const Sidebar = () => {
                 className="w-full h-full object-cover animate-fade-in"
               />
             </div>
-            
-            {/* Action Buttons / Details */}
-            <div className="w-full flex justify-end gap-2.5 mt-1">
-              <button 
-                onClick={() => {
-                  const link = document.createElement('a');
-                  link.href = activePreviewImage.img;
-                  link.download = `${activePreviewImage.name.replace(/\s+/g, '_')}_profile.png`;
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
-                }}
-                className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold transition-colors text-[#FAFAFA] flex items-center gap-1.5 hover:text-[#2D4A6B]"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 text-[#2D4A6B]">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                </svg>
-                Save Image
-              </button>
-            </div>
+
           </div>
         </div>
       )}
