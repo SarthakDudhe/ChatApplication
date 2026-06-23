@@ -7,7 +7,6 @@
   <br />
 
   <!-- Logo -->
-  <img src="client/src/assets/logo_big.png" alt="QuickChat Logo" width="220" style="filter: invert(1) hue-rotate(180deg) brightness(1.6) contrast(1.2); drop-shadow: 0 4px 24px rgba(212,175,55,0.25);" />
 
 <img width="240"  alt="Screenshot 2026-06-23 132433" src="https://github.com/user-attachments/assets/364da12b-e7be-4f91-af80-fb0ed924eb07" />
 
