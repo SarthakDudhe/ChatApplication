@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import assets from '../assets/assets'
 import { formatLastSeen, compressImage } from '../lib/utils'
 import { useNavigate } from 'react-router-dom'
@@ -39,6 +39,16 @@ const Sidebar = () => {
   const [selectedParticipants, setSelectedParticipants] = useState([]);
   const [activePreviewImage, setActivePreviewImage] = useState(null);
 
+  // Chatbot states
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const [chatbotInput, setChatbotInput] = useState("");
+  const [isBotTyping, setIsBotTyping] = useState(false);
+  const [chatbotMessages, setChatbotMessages] = useState([
+    { sender: 'bot', text: "Hello! I am QuickBot, your virtual assistant. Ask me anything about QuickChat encryption, WebSockets, or group settings!", time: new Date() }
+  ]);
+
+  const chatbotScrollEndRef = useRef(null);
+
   const groupConversations = conversations.filter(c => c.isGroup);
   const filteredGroups = input 
     ? groupConversations.filter(c => c.groupName.toLowerCase().includes(input.toLowerCase()))
@@ -59,6 +69,13 @@ const Sidebar = () => {
 
     return () => clearTimeout(delayDebounceFn);
   }, [input]);
+
+  // Scroll chatbot to bottom
+  useEffect(() => {
+    if (chatbotScrollEndRef.current && isChatbotOpen) {
+      chatbotScrollEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [chatbotMessages, isBotTyping, isChatbotOpen]);
 
   const handleSelectMessageResult = (msg) => {
     if (!authUser) return;
@@ -126,8 +143,43 @@ const Sidebar = () => {
     }
   };
 
+  // Chatbot submit logic
+  const handleChatbotSubmit = (e) => {
+    e.preventDefault();
+    if (!chatbotInput.trim()) return;
+
+    const userQuery = chatbotInput.trim();
+    const newUserMessage = { sender: 'user', text: userQuery, time: new Date() };
+    setChatbotMessages(prev => [...prev, newUserMessage]);
+    setChatbotInput("");
+    setIsBotTyping(true);
+
+    // AI Bot simulation delay
+    setTimeout(() => {
+      let botResponse = "I'm not sure about that. Try asking about 'encryption', 'websockets', 'groups', or 'who made this'!";
+      const query = userQuery.toLowerCase();
+
+      if (query.includes("hi") || query.includes("hello") || query.includes("hey")) {
+        botResponse = "Hello! I am QuickBot, your virtual assistant. Ask me anything about encryption, WebSockets, or group settings!";
+      } else if (query.includes("encryption") || query.includes("secure") || query.includes("e2ee") || query.includes("cryptography")) {
+        botResponse = "QuickChat implements client-side AES-256 encryption. Messages are encrypted locally on your browser using CryptoJS before sending over Socket.io. The MongoDB database only stores cipher text!";
+      } else if (query.includes("websocket") || query.includes("socket") || query.includes("realtime") || query.includes("typing")) {
+        botResponse = "Socket.io manages real-time messaging, typing indicators, and user presence indicators in constant O(1) time by holding in-memory socket maps on the Node.js server.";
+      } else if (query.includes("group") || query.includes("admin") || query.includes("member")) {
+        botResponse = "Groups allow multiple contacts to chat. Group Admins can edit names/avatars, add participants, and remove members. Group ownership transfers dynamically when the Admin leaves.";
+      } else if (query.includes("developer") || query.includes("who made") || query.includes("author")) {
+        botResponse = "QuickChat was engineered by Saksh, Sarthak Dudhe, and the development team to deliver a premium, secure enterprise messaging platform.";
+      } else if (query.includes("cors") || query.includes("origin") || query.includes("port")) {
+        botResponse = "CORS issues are handled by mapping the client VITE_BACKEND_URL to the local server port 5000 during testing, or specifying allowed domain lists on the backend CORS options.";
+      }
+
+      setChatbotMessages(prev => [...prev, { sender: 'bot', text: botResponse, time: new Date() }]);
+      setIsBotTyping(false);
+    }, 850);
+  };
+
   return (
-    <div className={`bg-[#1A1A1A] border-r border-white/10 h-full p-4 text-[#FAFAFA] flex flex-col select-none transition-all duration-300 ${selectedUser?"max-md:hidden":""}`}>
+    <div className={`bg-[#1A1A1A] border-r border-white/10 h-full p-4 text-[#FAFAFA] flex flex-col select-none transition-all duration-300 relative ${selectedUser?"max-md:hidden":""}`}>
         {/* User Profile Info Header */}
         <div className='pb-4 flex-shrink-0 border-b border-white/10'>
             <div className='flex justify-between items-center'>
@@ -398,6 +450,91 @@ const Sidebar = () => {
           </div>
         )}
       </div>
+
+      {/* Custom Chatbot Popup */}
+      {isChatbotOpen && (
+        <div className="absolute bottom-20 left-4 right-4 bg-white border border-[#E8E8E2] rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden max-h-[360px] text-[#1A1A1A] animate-fade-in-scale">
+          {/* Bot Header */}
+          <div className="bg-[#1A1A1A] text-white px-4 py-3 flex justify-between items-center flex-shrink-0">
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <div className="w-6 h-6 rounded-full bg-[#1C2B3A] flex items-center justify-center border border-white/20">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3.5 h-3.5 text-white">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
+                  </svg>
+                </div>
+                <span className="absolute bottom-0 right-0 w-1.5 h-1.5 rounded-full bg-green-500 border border-[#1A1A1A]"></span>
+              </div>
+              <div className="text-left leading-none">
+                <span className="text-xs font-bold font-headline text-white">QuickBot</span>
+                <p className="text-[8px] text-[#9CA3AF] mt-0.5">Online Assistant</p>
+              </div>
+            </div>
+            <button onClick={() => setIsChatbotOpen(false)} className="text-[#9CA3AF] hover:text-white transition-colors p-1">
+              ✕
+            </button>
+          </div>
+
+          {/* Bot Messages Feed */}
+          <div className="flex-1 overflow-y-auto p-3 bg-[#F5F5F0] flex flex-col gap-2.5 max-h-[220px] min-h-[160px] text-xs sidebar-scroll">
+            {chatbotMessages.map((msg, i) => (
+              <div key={i} className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
+                <div className={`p-2 px-3 rounded-xl max-w-[85%] text-left leading-relaxed ${msg.sender === 'user' ? 'bg-[#1C2B3A] text-white rounded-tr-none' : 'bg-white border border-[#E8E8E2] text-[#1A1A1A] rounded-tl-none shadow-sm'}`}>
+                  {msg.text}
+                </div>
+                <span className="text-[8px] text-[#9CA3AF] mt-0.5 px-1">{msg.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              </div>
+            ))}
+            {isBotTyping && (
+              <div className="flex flex-col items-start">
+                <div className="p-2.5 px-3.5 rounded-xl rounded-tl-none bg-white border border-[#E8E8E2] shadow-sm">
+                  <div className="flex items-center gap-1">
+                    <span className="w-1 h-1 rounded-full bg-[#9CA3AF] animate-bounce" style={{animationDelay:'0ms'}}></span>
+                    <span className="w-1 h-1 rounded-full bg-[#9CA3AF] animate-bounce" style={{animationDelay:'150ms'}}></span>
+                    <span className="w-1 h-1 rounded-full bg-[#9CA3AF] animate-bounce" style={{animationDelay:'300ms'}}></span>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={chatbotScrollEndRef}></div>
+          </div>
+
+          {/* Bot Input Bar */}
+          <form onSubmit={handleChatbotSubmit} className="border-t border-[#E8E8E2] p-2 bg-white flex gap-2 items-center flex-shrink-0">
+            <input 
+              type="text" 
+              value={chatbotInput}
+              onChange={(e) => setChatbotInput(e.target.value)}
+              placeholder="Ask QuickBot..." 
+              className="flex-1 bg-transparent border-none outline-none text-xs text-[#1A1A1A] placeholder-[#9CA3AF] py-1.5 px-2 text-left"
+            />
+            <button type="submit" className="w-7 h-7 rounded-lg bg-[#1C2B3A] hover:bg-[#253545] flex items-center justify-center text-white transition-all active:scale-95 flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3.5 h-3.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+              </svg>
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* Floating Chatbot Trigger Button */}
+      <button 
+        onClick={() => setIsChatbotOpen(!isChatbotOpen)}
+        className="absolute bottom-4 right-4 w-11 h-11 rounded-full bg-[#1C2B3A] hover:bg-[#253545] text-white flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all z-40 border border-white/20"
+        title="QuickBot AI Assistant"
+      >
+        <div className="relative">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 text-white">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
+          </svg>
+          {!isChatbotOpen && (
+            <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2D4A6B] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#2D4A6B]"></span>
+            </span>
+          )}
+        </div>
+      </button>
 
       {/* Create Group Modal */}
       {isCreateGroupOpen && (
