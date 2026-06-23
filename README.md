@@ -9,7 +9,9 @@
   <!-- Logo -->
   <img src="client/src/assets/logo_big.png" alt="QuickChat Logo" width="220" style="filter: invert(1) hue-rotate(180deg) brightness(1.6) contrast(1.2); drop-shadow: 0 4px 24px rgba(212,175,55,0.25);" />
 
-  <h1>⚡ QuickChat — Enterprise Real-Time Chat Infrastructure</h1>
+<img width="240"  alt="Screenshot 2026-06-23 132433" src="https://github.com/user-attachments/assets/364da12b-e7be-4f91-af80-fb0ed924eb07" />
+
+
 
   <p>
     <b>A high-performance, self-hosted messaging platform featuring Client-Side AES-256 End-to-End Encryption (E2EE), WebSocket-driven room concurrency, and a premium Smoke White & Ink Blue enterprise UI.</b>
