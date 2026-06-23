@@ -416,7 +416,13 @@ const Sidebar = () => {
                 <button onClick={() => setActivePreviewImage(null)} className="text-[#9CA3AF] hover:text-[#FAFAFA] bg-white/5 hover:bg-white/10 w-7 h-7 flex items-center justify-center rounded-full transition-all duration-200">✕</button>
               </div>
               <div className="relative w-full aspect-square max-h-[300px] overflow-hidden rounded-xl border border-white/10 bg-[#1A1A1A]">
-                <img src={activePreviewImage.img} alt={activePreviewImage.name} className="w-full h-full object-cover animate-fade-in" />
+                <img 
+                  src={activePreviewImage.img} 
+                  alt={activePreviewImage.name} 
+                  draggable={false}
+                  onContextMenu={(e) => e.preventDefault()}
+                  className="w-full h-full object-cover animate-fade-in select-none pointer-events-none" 
+                />
               </div>
             </div>
           </div>
@@ -839,7 +845,9 @@ const Sidebar = () => {
               <img 
                 src={activePreviewImage.img} 
                 alt={activePreviewImage.name} 
-                className="w-full h-full object-cover animate-fade-in"
+                draggable={false}
+                onContextMenu={(e) => e.preventDefault()}
+                className="w-full h-full object-cover animate-fade-in select-none pointer-events-none"
               />
             </div>
 
