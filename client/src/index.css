@@ -1,74 +1,237 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-primary-bg: #1A1A1A;
-  --color-secondary-container: #242424;
-  --color-accent-gold: #D4AF37;
-  --color-accent-amber: #FF6B35;
-  --color-text-white: #FAF9F6;
-  --color-text-muted: #8E8E93;
-
-  --color-deep-bg: #1A1A1A;
-  --color-panel-bg: rgba(36, 36, 36, 0.75);
-  --color-glass-bg: rgba(36, 36, 36, 0.65);
-  --color-glass-hover: rgba(255, 255, 255, 0.05);
-  --color-glass-border: rgba(255, 255, 255, 0.06);
-
-  --color-glow-violet: #FF6B35;
-  --color-glow-indigo: #D4AF37;
-
-  --color-violet-450: #D4AF37;
-  --color-violet-400: #D4AF37;
-  --color-violet-500: #C5A02B;
-  --color-violet-600: #B5911F;
-  --color-violet-700: #947514;
+  /* === SMOKE WHITE & INK BLUE PREMIUM PALETTE === */
+  --color-smoke-white: #F5F5F0;
+  --color-soft-white: #FAFAFA;
+  --color-matt-black: #1A1A1A;
+  --color-ink-blue: #1C2B3A;
+  --color-ink-blue-hover: #253545;
+  --color-ink-blue-light: rgba(28, 43, 58, 0.08);
   
-  --color-indigo-400: #FF6B35;
-  --color-indigo-500: #F25C24;
-  --color-indigo-600: #E34E15;
-  --color-indigo-700: #C23D0C;
+  /* Text */
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: #6B7280;
+  --color-text-muted: #9CA3AF;
+  --color-text-white: #FAFAFA;
+  
+  /* Borders */
+  --color-border-light: #E8E8E2;
+  --color-border-dark: rgba(232, 232, 226, 0.12);
+  
+  /* Status */
+  --color-online: #10B981;
+  --color-error: #EF4444;
+  
+  /* Sidebar */
+  --color-sidebar-bg: #1A1A1A;
+  --color-sidebar-hover: rgba(250, 250, 250, 0.06);
+  --color-sidebar-active: rgba(250, 250, 250, 0.12);
+  --color-sidebar-border: rgba(232, 232, 226, 0.10);
+
+  /* Mapped for compatibility */
+  --color-primary-bg: #F5F5F0;
+  --color-secondary-container: #FFFFFF;
+  --color-glass-bg: rgba(255, 255, 255, 0.8);
+  --color-accent-gold: #1C2B3A;
+  --color-accent-amber: #2D4A6B;
+  --color-text-muted-old: #9CA3AF;
+  --color-deep-bg: #F5F5F0;
+  --color-panel-bg: #FFFFFF;
 }
 
-body {
-  background-color: #1A1A1A !important;
-  color: #FAF9F6;
+/* ===========================
+   GLOBAL RESET & BASE STYLES
+   =========================== */
+* {
+  font-family: "Inter", sans-serif;
 }
 
-/* Force override of App.jsx background image to preserve clean Matte Black */
-div[class*="bg-[url"] {
-  background-image: none !important;
-  background-color: #1A1A1A !important;
-}
-
-*{
+h1, h2, h3, h4, h5, h6, .font-headline {
   font-family: "Outfit", sans-serif;
 }
 
-/* Glassmorphism panel styling */
-.glass-panel {
-  background: rgba(36, 36, 36, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+body {
+  background-color: #F5F5F0 !important;
+  color: #1A1A1A;
 }
 
+/* Remove old dark mode background forcing */
+div[class*="bg-[url"] {
+  background-image: none !important;
+  background-color: #F5F5F0 !important;
+}
+
+/* ===========================
+   MATERIAL SYMBOLS
+   =========================== */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===========================
+   SIDEBAR SPECIFIC
+   =========================== */
+.sidebar-bg {
+  background-color: #1A1A1A;
+}
+
+.sidebar-item {
+  @apply flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200;
+  color: #9CA3AF;
+}
+
+.sidebar-item:hover {
+  background-color: rgba(250, 250, 250, 0.06);
+  color: #FAFAFA;
+}
+
+.sidebar-item.active {
+  background-color: rgba(250, 250, 250, 0.12);
+  color: #FAFAFA;
+  border-left: 3px solid #1C2B3A;
+  padding-left: calc(0.75rem - 3px);
+}
+
+/* ===========================
+   GLASS / CARD PANELS
+   =========================== */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid #E8E8E2;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.card-panel {
+  background: #FFFFFF;
+  border: 1px solid #E8E8E2;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* ===========================
+   INPUT FIELDS
+   =========================== */
 .glass-input {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #FFFFFF;
+  border: 1px solid #E8E8E2;
+  transition: all 0.2s ease;
+  color: #1A1A1A;
 }
 
 .glass-input:focus {
-  border-color: rgba(212, 175, 55, 0.45);
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.18);
-  background: rgba(255, 255, 255, 0.05);
+  border-color: #1C2B3A;
+  box-shadow: 0 0 0 3px rgba(28, 43, 58, 0.08);
+  background: #FFFFFF;
+  outline: none;
 }
 
-/* Custom Scrollbars */
+.glass-input::placeholder {
+  color: #9CA3AF;
+}
+
+/* Sidebar search input */
+.sidebar-search {
+  background: rgba(250, 250, 250, 0.06);
+  border: 1px solid rgba(232, 232, 226, 0.10);
+  color: #FAFAFA;
+  transition: all 0.2s ease;
+}
+
+.sidebar-search:focus {
+  border-color: rgba(28, 43, 58, 0.6);
+  box-shadow: 0 0 0 2px rgba(28, 43, 58, 0.15);
+  outline: none;
+}
+
+.sidebar-search::placeholder {
+  color: #9CA3AF;
+}
+
+/* ===========================
+   BUTTONS
+   =========================== */
+.btn-primary {
+  background-color: #1C2B3A;
+  color: #FAFAFA;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #253545;
+  box-shadow: 0 4px 12px rgba(28, 43, 58, 0.2);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: #6B7280;
+  padding: 0.625rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid #E8E8E2;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background-color: #F5F5F0;
+  color: #1A1A1A;
+}
+
+/* ===========================
+   MESSAGE BUBBLES
+   =========================== */
+.bubble-sent {
+  background-color: #1C2B3A;
+  color: #FAFAFA;
+  border-radius: 18px 18px 4px 18px;
+  padding: 0.625rem 1rem;
+  box-shadow: 0 1px 2px rgba(28, 43, 58, 0.15);
+}
+
+.bubble-received {
+  background-color: #FFFFFF;
+  color: #1A1A1A;
+  border-radius: 18px 18px 18px 4px;
+  border: 1px solid #E8E8E2;
+  padding: 0.625rem 1rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+/* ===========================
+   CUSTOM SCROLLBARS
+   =========================== */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -76,30 +239,107 @@ div[class*="bg-[url"] {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(212, 175, 55, 0.2);
+  background: #E8E8E2;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(212, 175, 55, 0.45);
+  background: #9CA3AF;
 }
 
-/* Custom Keyframe Animations */
+/* Dark scrollbar for sidebar */
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* ===========================
+   ANIMATIONS
+   =========================== */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes highlightPulse {
-  0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse-dot {
+  0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+  40% { transform: scale(1); opacity: 1; }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ===========================
+   UNREAD BADGE
+   =========================== */
+.unread-badge {
+  background-color: #1C2B3A;
+  color: #FAFAFA;
+  font-size: 9px;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===========================
+   ONLINE INDICATOR
+   =========================== */
+.online-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #10B981;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+/* ===========================
+   ACTIVE CHAT ITEM (SIDEBAR)
+   =========================== */
+.chat-item-active {
+  background-color: rgba(250, 250, 250, 0.10);
+  border-left: 3px solid #1C2B3A !important;
+}
+
+/* ===========================
+   HIGHLIGHT ANIMATION
+   =========================== */
+@keyframes highlightFade {
+  0% { background-color: rgba(28, 43, 58, 0.12); }
+  100% { background-color: transparent; }
+}
+
+.animate-highlight {
+  animation: highlightFade 2s ease-out forwards;
 }
 
 .animate-pulse-glow {
-  animation: highlightPulse 2s infinite;
+  animation: fadeIn 0.5s ease-out;
 }
